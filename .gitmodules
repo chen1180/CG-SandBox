@@ -1,3 +1,9 @@
-[submodule "spdlog"]
-	path = CGCore//extern//spdlog
+[submodule "CGCore\\extern\\glfw"]
+	path = CGCore\\extern\\glfw
+	url = https://github.com/glfw/glfw
+[submodule "CGCore\\extern\\imgui"]
+	path = CGCore\\extern\\imgui
+	url = https://github.com/ocornut/imgui
+[submodule "CGCore\\extern\\spdlog"]
+	path = CGCore\\extern\\spdlog
 	url = https://github.com/gabime/spdlog

@@ -6,7 +6,7 @@ namespace CGCore {
 	{
 		CG_CORE_ASSERT(!s_AppInstance, "Application already exists!");
 		s_AppInstance = this;
-		
+		m_Window = Window::Create();
 	}
 	Application::~Application()
 	{
@@ -16,6 +16,7 @@ namespace CGCore {
 		while (true) {
 		
 			CG_CORE_INFO("App running");
+			m_Window->OnUpdate();
 		}
 	}
 

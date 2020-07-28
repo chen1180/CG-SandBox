@@ -15,10 +15,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{581754A9-44B9-7E7F-2D74-92D319B505D0}</ProjectGuid>
+    <ProjectGuid>{9563977C-819A-980D-2A87-7E10169D140F}</ProjectGuid>
     <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>CGCore</RootNamespace>
+    <RootNamespace>glfw</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -54,125 +54,88 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>..\bin\Debug_windows_x86_64\CGCore\</OutDir>
-    <IntDir>..\bin-int\Debug_windows_x86_64\CGCore\</IntDir>
-    <TargetName>CGCore</TargetName>
+    <OutDir>bin\Debug_windows_x86_64\glfw\</OutDir>
+    <IntDir>bin-int\Debug_windows_x86_64\glfw\</IntDir>
+    <TargetName>glfw</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>..\bin\Release_windows_x86_64\CGCore\</OutDir>
-    <IntDir>..\bin-int\Release_windows_x86_64\CGCore\</IntDir>
-    <TargetName>CGCore</TargetName>
+    <OutDir>bin\Release_windows_x86_64\glfw\</OutDir>
+    <IntDir>bin-int\Release_windows_x86_64\glfw\</IntDir>
+    <TargetName>glfw</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
-    <OutDir>..\bin\Dist_windows_x86_64\CGCore\</OutDir>
-    <IntDir>..\bin-int\Dist_windows_x86_64\CGCore\</IntDir>
-    <TargetName>CGCore</TargetName>
+    <OutDir>bin\Dist_windows_x86_64\glfw\</OutDir>
+    <IntDir>bin-int\Dist_windows_x86_64\glfw\</IntDir>
+    <TargetName>glfw</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;CG_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>extern\spdlog\include;src;extern\imgui;extern\glfw\include;extern\Glad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_GLFW_WIN32;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
-    <Lib>
-      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;CG_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>extern\spdlog\include;src;extern\imgui;extern\glfw\include;extern\Glad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_GLFW_WIN32;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
-    <Lib>
-      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;CG_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>extern\spdlog\include;src;extern\imgui;extern\glfw\include;extern\Glad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <Optimization>Full</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <MinimalRebuild>false</MinimalRebuild>
-      <StringPooling>true</StringPooling>
+      <PreprocessorDefinitions>_GLFW_WIN32;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
     </Link>
-    <Lib>
-      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\CGCore.h" />
-    <ClInclude Include="src\base\Application.h" />
-    <ClInclude Include="src\base\Base.h" />
-    <ClInclude Include="src\base\EntryPoint.h" />
-    <ClInclude Include="src\base\Layer.h" />
-    <ClInclude Include="src\base\LayerStack.h" />
-    <ClInclude Include="src\base\Log.h" />
-    <ClInclude Include="src\base\Window.h" />
-    <ClInclude Include="src\imgui\ImguiLayer.h" />
-    <ClInclude Include="src\pch.h" />
-    <ClInclude Include="src\platform\window\WindowsWindow.h" />
+    <ClInclude Include="glfw\include\GLFW\glfw3.h" />
+    <ClInclude Include="glfw\include\GLFW\glfw3native.h" />
+    <ClInclude Include="glfw\src\glfw_config.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\base\Application.cpp" />
-    <ClCompile Include="src\base\Layer.cpp" />
-    <ClCompile Include="src\base\LayerStack.cpp" />
-    <ClCompile Include="src\base\Log.cpp" />
-    <ClCompile Include="src\imgui\ImguiLayer.cpp" />
-    <ClCompile Include="src\pch.cpp">
-      <PrecompiledHeader>Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="src\platform\window\WindowsWindow.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="extern\glfw.vcxproj">
-      <Project>{9563977C-819A-980D-2A87-7E10169D140F}</Project>
-    </ProjectReference>
-    <ProjectReference Include="extern\Glad.vcxproj">
-      <Project>{BDD6857C-A90D-870D-52FA-6C103E10030F}</Project>
-    </ProjectReference>
-    <ProjectReference Include="extern\imgui.vcxproj">
-      <Project>{0098A80F-6CAC-D0C0-352E-7420A101CDF1}</Project>
-    </ProjectReference>
+    <ClCompile Include="glfw\src\context.c" />
+    <ClCompile Include="glfw\src\egl_context.c" />
+    <ClCompile Include="glfw\src\init.c" />
+    <ClCompile Include="glfw\src\input.c" />
+    <ClCompile Include="glfw\src\monitor.c" />
+    <ClCompile Include="glfw\src\osmesa_context.c" />
+    <ClCompile Include="glfw\src\vulkan.c" />
+    <ClCompile Include="glfw\src\wgl_context.c" />
+    <ClCompile Include="glfw\src\win32_init.c" />
+    <ClCompile Include="glfw\src\win32_joystick.c" />
+    <ClCompile Include="glfw\src\win32_monitor.c" />
+    <ClCompile Include="glfw\src\win32_thread.c" />
+    <ClCompile Include="glfw\src\win32_time.c" />
+    <ClCompile Include="glfw\src\win32_window.c" />
+    <ClCompile Include="glfw\src\window.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

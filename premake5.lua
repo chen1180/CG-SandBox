@@ -12,10 +12,10 @@ outputdir="%{cfg.buildcfg}_%{cfg.system}_%{cfg.architecture}"
 
 
 IncludeDir={}
-IncludeDir["imgui"]="CGCore/extern/imgui"
+IncludeDir["extern"]="CGCore/extern/"
 
 group "Depencencies"
-	include "CGCore/extern/imgui"
+	include "CGCore/extern/"
 group ""
 
 project "CGCore"
@@ -39,10 +39,15 @@ project "CGCore"
 	includedirs{
 		"%{prj.name}/extern/spdlog/include",
 		"%{prj.name}/src",
-		"%{IncludeDir.imGui}"
-
+		"%{IncludeDir.extern}/imgui/",
+		"%{IncludeDir.extern}/glfw/include",
+		"%{IncludeDir.extern}/Glad/include"
 	}
 	links{
+		"GLFW",
+		"Glad",
+		"ImGui",
+		"opengl32.lib"
 	}
 	pchheader "pch.h"
 	pchsource "CGCore/src/pch.cpp"
@@ -84,7 +89,9 @@ project "CGSandbox"
 	includedirs{
 		"CGCore/src",
 		"CGCore/extern/spdlog/include",
-		"%{IncludeDir.imGui}"
+		"%{IncludeDir.extern}/imgui/",
+		"%{IncludeDir.extern}/glfw/include",
+		"%{IncludeDir.extern}/Glad/include"
 
 	}
 	links{

@@ -1,6 +1,5 @@
 
 #include "Sandbox.h"
-
 namespace CGCore {
 
 	void Sandbox::OnUpdate()
@@ -16,4 +15,4 @@ namespace CGCore {
 	void Sandbox::OnDettach()
 	{
 	}
-}
+} 

@@ -1,7 +1,6 @@
 #pragma once
 #include"CGCore.h"
 #include"base/EntryPoint.h"
-
 namespace CGCore {
 
     class Sandbox :public Layer
