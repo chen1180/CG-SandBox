@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CGSandbox", "CGSandbox\CGSandbox.vcxproj", "{DE4C55D4-4AB7-094B-93F5-BAF0FF9EE79F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CGCore", "CGCore\CGCore.vcxproj", "{581754A9-44B9-7E7F-2D74-92D319B505D0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Depencencies", "Depencencies", "{92A77EF5-7E8B-3F4B-E7EB-399ED3EE29CD}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImGui", "CGCore\extern\imgui\ImGui.vcxproj", "{C0FF640D-2C14-8DBE-F595-301E616989EF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Dist|x64 = Dist|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DE4C55D4-4AB7-094B-93F5-BAF0FF9EE79F}.Debug|x64.ActiveCfg = Debug|x64
+		{DE4C55D4-4AB7-094B-93F5-BAF0FF9EE79F}.Debug|x64.Build.0 = Debug|x64
+		{DE4C55D4-4AB7-094B-93F5-BAF0FF9EE79F}.Dist|x64.ActiveCfg = Dist|x64
+		{DE4C55D4-4AB7-094B-93F5-BAF0FF9EE79F}.Dist|x64.Build.0 = Dist|x64
+		{DE4C55D4-4AB7-094B-93F5-BAF0FF9EE79F}.Release|x64.ActiveCfg = Release|x64
+		{DE4C55D4-4AB7-094B-93F5-BAF0FF9EE79F}.Release|x64.Build.0 = Release|x64
+		{581754A9-44B9-7E7F-2D74-92D319B505D0}.Debug|x64.ActiveCfg = Debug|x64
+		{581754A9-44B9-7E7F-2D74-92D319B505D0}.Debug|x64.Build.0 = Debug|x64
+		{581754A9-44B9-7E7F-2D74-92D319B505D0}.Dist|x64.ActiveCfg = Dist|x64
+		{581754A9-44B9-7E7F-2D74-92D319B505D0}.Dist|x64.Build.0 = Dist|x64
+		{581754A9-44B9-7E7F-2D74-92D319B505D0}.Release|x64.ActiveCfg = Release|x64
+		{581754A9-44B9-7E7F-2D74-92D319B505D0}.Release|x64.Build.0 = Release|x64
+		{C0FF640D-2C14-8DBE-F595-301E616989EF}.Debug|x64.ActiveCfg = Debug|x64
+		{C0FF640D-2C14-8DBE-F595-301E616989EF}.Debug|x64.Build.0 = Debug|x64
+		{C0FF640D-2C14-8DBE-F595-301E616989EF}.Dist|x64.ActiveCfg = Dist|x64
+		{C0FF640D-2C14-8DBE-F595-301E616989EF}.Dist|x64.Build.0 = Dist|x64
+		{C0FF640D-2C14-8DBE-F595-301E616989EF}.Release|x64.ActiveCfg = Release|x64
+		{C0FF640D-2C14-8DBE-F595-301E616989EF}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C0FF640D-2C14-8DBE-F595-301E616989EF} = {92A77EF5-7E8B-3F4B-E7EB-399ED3EE29CD}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="base">
+      <UniqueIdentifier>{8078947C-6CAF-950D-159C-7B1001B2110F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="imgui">
+      <UniqueIdentifier>{0098A80F-6CAC-D0C0-352E-7420A101CDF1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\CGCore.h" />
+    <ClInclude Include="src\base\Application.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\base\Base.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\base\EntryPoint.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\base\Layer.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\base\LayerStack.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\base\Log.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\imgui\ImguiLayer.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pch.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\base\Application.cpp">
+      <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base\Layer.cpp">
+      <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base\LayerStack.cpp">
+      <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base\Log.cpp">
+      <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\imgui\ImguiLayer.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pch.cpp" />
+  </ItemGroup>
+</Project>
