@@ -1,5 +1,6 @@
 #pragma once
 #include<string>
+#include"event/Event.h"
 namespace CGCore {
 	class Layer
 	{
@@ -10,11 +11,12 @@ namespace CGCore {
 		virtual void OnImGuiRender() = 0;
 		virtual void OnAttach()=0;
 		virtual void OnDettach() = 0;
+		virtual void OnEvent(Event& e){};
 		inline std::string& GetName() { return m_DebugName; }
 
 	protected:
 		std::string m_DebugName;
-
+		 
 	};
 }
 

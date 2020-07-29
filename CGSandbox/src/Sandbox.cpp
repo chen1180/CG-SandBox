@@ -15,4 +15,7 @@ namespace CGCore {
 	void Sandbox::OnDettach()
 	{
 	}
+	void Sandbox::OnEvent(Event& e) {
+	
+	}
 } 

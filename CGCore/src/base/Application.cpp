@@ -1,21 +1,25 @@
 #include "pch.h"
 #include "Application.h"
 namespace CGCore {
+
 	Application* Application::s_AppInstance=nullptr;
 	Application::Application()
 	{
 		CG_CORE_ASSERT(!s_AppInstance, "Application already exists!");
 		s_AppInstance = this;
 		m_Window = Window::Create();
+		m_Window->SetEventCallback(EVENT_CB_FUNC(Application::OnEvent));
 	}
 	Application::~Application()
 	{
+		delete m_Window;
 	}
 	void Application::Run()
 	{
-		while (true) {
-		
-			CG_CORE_INFO("App running");
+		while (m_WindowRunning) {
+			if (!m_WindowResize) {
+			
+			}
 			m_Window->OnUpdate();
 		}
 	}
@@ -32,5 +36,37 @@ namespace CGCore {
 		layer->OnDettach();
 	}
 
+	bool Application::OnWindowClose(WindowCloseEvent& e)
+	{
+		m_WindowRunning = false;
+		return true;
+	}
+
+	bool Application::OnWindowResize(WindowResizeEvent& e)
+	{
+		if (e.GetWidth() == 0 || e.GetHeight() == 0) {
+			m_WindowResize = true;
+			return false;
+
+		}
+		//Renderer::OnWindowReize(e.GetWidth(), e.GetHeight());
+		m_WindowResize = false;
+		return false;
+	}
+
+	void  Application::OnEvent(Event& event) {
+		EventDispatcher dispatcher(event);
+		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FUNC(Application::OnWindowClose));
+		dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FUNC(Application::OnWindowResize));
+		CG_CORE_INFO(event.ToString());
+
+		for (auto it = m_LayerStack.begin();it != m_LayerStack.end();it++) {
+			if (event.Handled)
+				break;
+			(*it)->OnEvent(event);
+		}
+
+
+	}
 
 }

@@ -11,6 +11,7 @@ namespace CGCore {
 		virtual void OnImGuiRender() override;
 		virtual void OnAttach() override;
 		virtual void OnDettach() override;
+		virtual void OnEvent(Event& e) override;
 
     }; 
 	class App :public Application {

@@ -44,6 +44,10 @@
     <ClInclude Include="src\platform\window\WindowsWindow.h">
       <Filter>platform\window</Filter>
     </ClInclude>
+    <ClInclude Include="src\event\ApplicationEvent.h" />
+    <ClInclude Include="src\event\Event.h" />
+    <ClInclude Include="src\event\MouseEvent.h" />
+    <ClInclude Include="src\event\KeyEvent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\base\Application.cpp">
