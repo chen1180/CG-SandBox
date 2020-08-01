@@ -1,5 +1,6 @@
 #pragma once
 #include"base/Window.h"
+#include"platform/opengl/OpenGLRenderContext.h"
 #include<glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -23,6 +24,7 @@ namespace CGCore {
 
 	private:
 		GLFWwindow* m_Window;
+		OpenGLRenderContext* m_OpenGLContext;
 		struct WindowData {
 			uint32_t Width, Height;
 			std::string Title;

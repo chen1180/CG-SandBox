@@ -9,11 +9,9 @@ namespace CGCore {
 	{
 		return new WindowsWindow(windowProps);
 	}
-	WindowsWindow::WindowsWindow(const WindowProperty& windowProps) 
+	WindowsWindow::WindowsWindow(const WindowProperty& windowProps)
 	{
 		Init(windowProps);
-		glfwMakeContextCurrent(m_Window);
-		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 	}
 
 	WindowsWindow::~WindowsWindow()
@@ -33,8 +31,8 @@ namespace CGCore {
 			s_GLFWInitialized = true;
 		}
 		m_Window = glfwCreateWindow((int)m_WindowProps.Width, (int)m_WindowProps.Height, m_WindowProps.Title.c_str(), nullptr, nullptr);
-
-		
+		m_OpenGLContext = new OpenGLRenderContext(m_Window);
+		m_OpenGLContext->Init();
 		//bind callback function
 		glfwSetWindowUserPointer(m_Window, &m_WindowProps);
 		SetVSync(true);
@@ -130,7 +128,7 @@ namespace CGCore {
 	{
 
 		glfwPollEvents();
-		glfwSwapBuffers(m_Window);
+		m_OpenGLContext->SwapBuffer();
 	}
 	uint32_t WindowsWindow::GetWidth() const
 	{
