@@ -7,10 +7,10 @@ namespace CGCore {
 	public:
 		Layer(const std::string& name) :m_DebugName(name) {}
 		virtual ~Layer() {};
-		virtual void OnUpdate()=0;
-		virtual void OnImGuiRender() = 0;
-		virtual void OnAttach()=0;
-		virtual void OnDettach() = 0;
+		virtual void OnUpdate() {};
+		virtual void OnImGuiRender() {};
+		virtual void OnAttach() {};
+		virtual void OnDettach() {};
 		virtual void OnEvent(Event& e){};
 		inline std::string& GetName() { return m_DebugName; }
 

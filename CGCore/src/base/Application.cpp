@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "Application.h"
+#include"graphics/Renderer.h"
+
 namespace CGCore {
 
 	Application* Application::s_AppInstance=nullptr;
@@ -9,6 +11,10 @@ namespace CGCore {
 		s_AppInstance = this;
 		m_Window = Window::Create();
 		m_Window->SetEventCallback(EVENT_CB_FUNC(Application::OnEvent));
+		m_ImguiLayer = new ImguiLayer();
+		PushLayer(m_ImguiLayer);
+		//init renderer
+		Renderer::Init();
 	}
 	Application::~Application()
 	{
@@ -18,7 +24,16 @@ namespace CGCore {
 	{
 		while (m_WindowRunning) {
 			if (!m_WindowResize) {
-			
+				//update layer
+				for (Layer* layer : m_LayerStack) {
+					layer->OnUpdate();
+				}
+				//imgui layer
+				m_ImguiLayer->Begin();
+				for (Layer* layer : m_LayerStack) {
+					layer->OnImGuiRender();
+				}
+				m_ImguiLayer->End();
 			}
 			m_Window->OnUpdate();
 		}

@@ -140,8 +140,6 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\event\ApplicationEvent.h" />
-    <ClInclude Include="src\event\Event.h" />
     <ClInclude Include="src\CGCore.h" />
     <ClInclude Include="src\base\Application.h" />
     <ClInclude Include="src\base\Base.h" />
@@ -150,8 +148,11 @@
     <ClInclude Include="src\base\LayerStack.h" />
     <ClInclude Include="src\base\Log.h" />
     <ClInclude Include="src\base\Window.h" />
+    <ClInclude Include="src\event\ApplicationEvent.h" />
+    <ClInclude Include="src\event\Event.h" />
     <ClInclude Include="src\event\KeyEvent.h" />
     <ClInclude Include="src\event\MouseEvent.h" />
+    <ClInclude Include="src\graphics\Renderer.h" />
     <ClInclude Include="src\imgui\ImguiLayer.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\platform\window\WindowsWindow.h" />
@@ -161,7 +162,9 @@
     <ClCompile Include="src\base\Layer.cpp" />
     <ClCompile Include="src\base\LayerStack.cpp" />
     <ClCompile Include="src\base\Log.cpp" />
+    <ClCompile Include="src\graphics\Renderer.cpp" />
     <ClCompile Include="src\imgui\ImguiLayer.cpp" />
+    <ClCompile Include="src\imgui\ImguiBuild.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>

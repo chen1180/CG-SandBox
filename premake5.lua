@@ -33,7 +33,7 @@ project "CGCore"
 	files
 	{
 		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/src/**.cpp"
 	}
 
 	includedirs{
@@ -44,9 +44,9 @@ project "CGCore"
 		"%{IncludeDir.extern}/Glad/include"
 	}
 	links{
-		"GLFW",
+		"glfw",
 		"Glad",
-		"ImGui",
+		"imgui",
 		"opengl32.lib"
 	}
 	pchheader "pch.h"

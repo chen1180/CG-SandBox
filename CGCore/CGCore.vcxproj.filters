@@ -4,6 +4,12 @@
     <Filter Include="base">
       <UniqueIdentifier>{8078947C-6CAF-950D-159C-7B1001B2110F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="event">
+      <UniqueIdentifier>{071C650F-7330-8DC0-3CB2-3020A88589F1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="graphics">
+      <UniqueIdentifier>{36EF08BC-22BC-63C7-4BD5-516F37019955}</UniqueIdentifier>
+    </Filter>
     <Filter Include="imgui">
       <UniqueIdentifier>{0098A80F-6CAC-D0C0-352E-7420A101CDF1}</UniqueIdentifier>
     </Filter>
@@ -37,6 +43,21 @@
     <ClInclude Include="src\base\Window.h">
       <Filter>base</Filter>
     </ClInclude>
+    <ClInclude Include="src\event\ApplicationEvent.h">
+      <Filter>event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\event\Event.h">
+      <Filter>event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\event\KeyEvent.h">
+      <Filter>event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\event\MouseEvent.h">
+      <Filter>event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\Renderer.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
     <ClInclude Include="src\imgui\ImguiLayer.h">
       <Filter>imgui</Filter>
     </ClInclude>
@@ -44,10 +65,6 @@
     <ClInclude Include="src\platform\window\WindowsWindow.h">
       <Filter>platform\window</Filter>
     </ClInclude>
-    <ClInclude Include="src\event\ApplicationEvent.h" />
-    <ClInclude Include="src\event\Event.h" />
-    <ClInclude Include="src\event\MouseEvent.h" />
-    <ClInclude Include="src\event\KeyEvent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\base\Application.cpp">
@@ -62,12 +79,18 @@
     <ClCompile Include="src\base\Log.cpp">
       <Filter>base</Filter>
     </ClCompile>
+    <ClCompile Include="src\graphics\Renderer.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
     <ClCompile Include="src\imgui\ImguiLayer.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
     <ClCompile Include="src\pch.cpp" />
     <ClCompile Include="src\platform\window\WindowsWindow.cpp">
       <Filter>platform\window</Filter>
+    </ClCompile>
+    <ClCompile Include="src\imgui\ImguiBuild.cpp">
+      <Filter>imgui</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
