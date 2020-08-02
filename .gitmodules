@@ -7,3 +7,6 @@
 [submodule "CGCore\\extern\\spdlog"]
 	path = CGCore\\extern\\spdlog
 	url = https://github.com/gabime/spdlog
+[submodule "CGCore\\extern\\glm"]
+	path = CGCore\\extern\\glm
+	url = https://github.com/g-truc/glm

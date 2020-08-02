@@ -8,7 +8,8 @@
 namespace CGCore {
 	void ImguiLayer::OnImGuiRender()
 	{
-        ImGui::ShowDemoWindow(&m_ShowDemo);
+        if (m_ShowDemo)
+            ImGui::ShowDemoWindow(&m_ShowDemo);
 	}
 	void ImguiLayer::OnAttach()
 	{

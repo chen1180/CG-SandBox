@@ -41,7 +41,8 @@ project "CGCore"
 		"%{prj.name}/src",
 		"%{IncludeDir.extern}/imgui/",
 		"%{IncludeDir.extern}/glfw/include",
-		"%{IncludeDir.extern}/Glad/include"
+		"%{IncludeDir.extern}/Glad/include",
+		"%{IncludeDir.extern}/glm"
 	}
 	links{
 		"glfw",
@@ -91,7 +92,8 @@ project "CGSandbox"
 		"CGCore/extern/spdlog/include",
 		"%{IncludeDir.extern}/imgui/",
 		"%{IncludeDir.extern}/glfw/include",
-		"%{IncludeDir.extern}/Glad/include"
+		"%{IncludeDir.extern}/Glad/include",
+		"%{IncludeDir.extern}/glm"
 
 	}
 	links{

@@ -12,6 +12,9 @@ namespace CGCore {
 		virtual void OnAttach() override;
 		virtual void OnDettach() override;
 		virtual void OnEvent(Event& e) override;
+	private:
+		GLuint m_Program;
+		GLuint m_VAO,m_VBO,m_EBO;
     }; 
 	class App :public Application {
 	public:
