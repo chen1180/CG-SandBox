@@ -15,7 +15,7 @@ namespace CGCore {
 
 	};
 }
-#ifdef CG_DEBUG || CG_RELEASE
+#if defined(CG_DEBUG) ||  defined(CG_RELEASE)
 	#define CG_CORE_INFO(...) CGCore::Log::GetCoreLogger()->info(__VA_ARGS__);
 	#define CG_CORE_WARN(...) CGCore::Log::GetCoreLogger()->warn(__VA_ARGS__);
 	#define CG_CORE_ERROR(...) CGCore::Log::GetCoreLogger()->error(__VA_ARGS__);
