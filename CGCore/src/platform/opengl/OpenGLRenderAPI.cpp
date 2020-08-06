@@ -11,6 +11,6 @@ namespace CGCore {
 	void OpenGLRenderAPI::Clear()
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glClearColor(0.7, 0.3, 0.4, 1.0);
+		glClearColor(0.7f, 0.3f, 0.4f, 1.0f);
 	} 
 }

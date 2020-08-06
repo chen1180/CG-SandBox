@@ -54,15 +54,10 @@ namespace CGCore {
 	}
 	void SandBox::OnImGuiRender()
 	{
-
 		ImGui::Begin("New session"); 
-		ImGui::Checkbox("Imgui Demo",&m_ShowImguiDemo);
-		if (m_ShowImguiDemo)
-			ImGui::ShowDemoWindow(&m_ShowImguiDemo);
-		ImGui::Separator();
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-		ImGui::Separator();
 		ImGui::Text("Hello world!");
+
 		ImGui::End();
 	}
 

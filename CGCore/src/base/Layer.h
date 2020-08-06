@@ -7,7 +7,7 @@ namespace CGCore {
 	public:
 		Layer(const std::string& name) :m_DebugName(name) {}
 		virtual ~Layer() {};
-		virtual void OnUpdate() {};
+		virtual void OnUpdate(float deltaTime) {};
 		virtual void OnImGuiRender() {};
 		virtual void OnAttach() {};
 		virtual void OnDettach() {};

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "OpenGLShader.h"
 #include"glad/glad.h"
+#include"glm/gtc/type_ptr.hpp"
 namespace CGCore {
 	OpenGLShader::OpenGLShader(const char* vertexSource, const char* fragmentSource)
 	{
@@ -10,7 +11,12 @@ namespace CGCore {
 	}
 	OpenGLShader::OpenGLShader(const std::string& vertexPath, const std::string& fragmentPath)
 	{
-		
+		std::string vertexShaderSource = ReadFile(vertexPath);
+		std::string fragmentShaderSource = ReadFile(fragmentPath);
+
+		m_VertexShader = Preprocess(vertexShaderSource.c_str(), ShaderType::Vertex);
+		m_FragmentShader = Preprocess(fragmentShaderSource.c_str(), ShaderType::Fragment);
+		Compile();
 	}
 	OpenGLShader::~OpenGLShader()
 	{
@@ -88,7 +94,7 @@ namespace CGCore {
 			shaderType = "Fragment";
 			break;
 		default:
-			CG_CORE_ASSERT(false, "OpenGLShader::ShaderType::Unkown!");
+			CG_CORE_ASSERT(false, "OpenGLShader::ShaderType::Unknown!");
 			break;
 		}
 		// Send the vertex shader source code to GL
@@ -116,5 +122,61 @@ namespace CGCore {
 		}
 		CG_CORE_INFO("OPENGL::Shader::{0}: Compilation successfully!", shaderType);
 		return shaderID;
+	}
+
+	std::string OpenGLShader::ReadFile(const std::string& path)
+	{
+		std::string content;
+		std::ifstream fileStream(path, std::ios::in);
+
+		if (!fileStream.is_open()) {
+			CG_CORE_ERROR("Could not read file {0}. File does not exist.", path);
+			return "";
+		}
+
+		std::string line = "";
+		while (!fileStream.eof()) {
+			std::getline(fileStream, line);
+			content.append(line + "\n");
+		}
+
+		fileStream.close();
+		return content;
+
+	}
+	void OpenGLShader::UploadUniformInt(const std::string& name, const uint32_t& value)
+	{
+		GLint location = glGetUniformLocation(m_ProgramID, name.c_str());
+		glUniform1i(location, value);
+	}
+	void OpenGLShader::UploadUniformMat2(const std::string& name, const glm::mat2& value)
+	{
+		GLint location = glGetUniformLocation(m_ProgramID, name.c_str());
+		glUniformMatrix2fv(location, 1, GL_FALSE, glm::value_ptr(value));
+	}
+	void OpenGLShader::UploadUniformMat3(const std::string& name, const glm::mat3& value)
+	{
+		GLint location = glGetUniformLocation(m_ProgramID, name.c_str());
+		glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(value));
+	}
+	void OpenGLShader::UploadUniformMat4(const std::string& name, const glm::mat4& value)
+	{
+		GLint location = glGetUniformLocation(m_ProgramID, name.c_str());
+		glUniformMatrix4fv(location,1, GL_FALSE, glm::value_ptr(value));
+	}
+	void OpenGLShader::UploadUniformFloat(const std::string& name, const float& value)
+	{
+		GLint location = glGetUniformLocation(m_ProgramID, name.c_str());
+		glUniform1f(location, value);
+	} 
+	void OpenGLShader::UploadUniformFloat2(const std::string& name, const glm::vec2& value)
+	{
+		GLint location = glGetUniformLocation(m_ProgramID, name.c_str());
+		glUniform2f(location, value.x, value.y);
+	}
+	void OpenGLShader::UploadUniformFloat3(const std::string& name, const glm::vec3& value)
+	{
+		GLint location = glGetUniformLocation(m_ProgramID,name.c_str());
+		glUniform3f(location, value.x,value.y,value.z);
 	}
 }

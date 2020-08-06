@@ -15,7 +15,6 @@ namespace CGCore {
 		void Begin();
 		void End();
 	private:
-		bool m_ShowDemo = true;
 
 	};
 }

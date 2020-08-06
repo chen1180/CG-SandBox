@@ -4,9 +4,10 @@
 #include"platform/window/WindowsWindow.h"
 #include"event/ApplicationEvent.h"
 #include"imgui/ImguiLayer.h"
+#include"Timestep.h"
 namespace CGCore {
 
-#define BIND_EVENT_FUNC(fn) std::bind(&fn,this,std::placeholders::_1)
+
 	class Application
 	{
 	public:
@@ -24,6 +25,7 @@ namespace CGCore {
 		static Application* s_AppInstance;
 		Window* m_Window;
 		ImguiLayer* m_ImguiLayer;
+		TimeStep m_Time;
 		bool m_WindowRunning=true;
 		bool m_WindowResize = false;
 	private:

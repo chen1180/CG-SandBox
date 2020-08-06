@@ -24,9 +24,10 @@ namespace CGCore {
 	{
 		while (m_WindowRunning) {
 			if (!m_WindowResize) {
+				float deltaTime = m_Time.UpdateDeltaTime((float)glfwGetTime());
 				//update layer
 				for (Layer* layer : m_LayerStack) {
-					layer->OnUpdate();
+					layer->OnUpdate(deltaTime);
 				}
 				//imgui layer
 				m_ImguiLayer->Begin();
@@ -71,8 +72,8 @@ namespace CGCore {
 
 	void  Application::OnEvent(Event& event) {
 		EventDispatcher dispatcher(event);
-		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FUNC(Application::OnWindowClose));
-		dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FUNC(Application::OnWindowResize));
+		dispatcher.Dispatch<WindowCloseEvent>(EVENT_CB_FUNC(Application::OnWindowClose));
+		dispatcher.Dispatch<WindowResizeEvent>(EVENT_CB_FUNC(Application::OnWindowResize));
 		CG_CORE_INFO(event.ToString());
 
 		for (auto it = m_LayerStack.begin();it != m_LayerStack.end();it++) {

@@ -6,6 +6,8 @@ workspace "CG-Sandbox"
 		"Dist"
 	}
 	startproject "CGSandbox"
+	buildoptions { "/MP" }
+
 
 outputdir="%{cfg.buildcfg}_%{cfg.system}_%{cfg.architecture}"
 --include directories relative to root folder 
@@ -33,12 +35,15 @@ project "CGCore"
 	files
 	{
 		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
+		"%{prj.name}/src/**.cpp",
+		"%{IncludeDir.extern}/stb_img/**.h",
+		"%{IncludeDir.extern}/stb_img/**.cpp"
 	}
 
 	includedirs{
 		"%{prj.name}/extern/spdlog/include",
 		"%{prj.name}/src",
+		"%{IncludeDir.extern}/stb_img/",
 		"%{IncludeDir.extern}/imgui/",
 		"%{IncludeDir.extern}/glfw/include",
 		"%{IncludeDir.extern}/Glad/include",
@@ -84,12 +89,15 @@ project "CGSandbox"
 	files
 	{
 		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
+		"%{prj.name}/src/**.cpp",
+		"%{IncludeDir.extern}/stb_img/**h",
+		"%{IncludeDir.extern}/stb_img/**.cpp"
 	}
 
 	includedirs{
 		"CGCore/src",
 		"CGCore/extern/spdlog/include",
+		"%{IncludeDir.extern}/stb_img/",
 		"%{IncludeDir.extern}/imgui/",
 		"%{IncludeDir.extern}/glfw/include",
 		"%{IncludeDir.extern}/Glad/include",

@@ -18,7 +18,6 @@ namespace CGCore {
 		Ref<VertexArray> m_VAO;
 		Ref<Texture2D> m_Texture;
 		OrthographicsCameraController* m_CameraController;
-		bool m_ShowImguiDemo = false;
     }; 
 
 }
