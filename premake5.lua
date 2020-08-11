@@ -47,7 +47,8 @@ project "CGCore"
 		"%{IncludeDir.extern}/imgui/",
 		"%{IncludeDir.extern}/glfw/include",
 		"%{IncludeDir.extern}/Glad/include",
-		"%{IncludeDir.extern}/glm"
+		"%{IncludeDir.extern}/glm",
+		"%{IncludeDir.extern}/tinyobjloader"
 	}
 	links{
 		"glfw",
@@ -89,9 +90,7 @@ project "CGSandbox"
 	files
 	{
 		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp",
-		"%{IncludeDir.extern}/stb_img/**h",
-		"%{IncludeDir.extern}/stb_img/**.cpp"
+		"%{prj.name}/src/**.cpp"
 	}
 
 	includedirs{
@@ -101,7 +100,8 @@ project "CGSandbox"
 		"%{IncludeDir.extern}/imgui/",
 		"%{IncludeDir.extern}/glfw/include",
 		"%{IncludeDir.extern}/Glad/include",
-		"%{IncludeDir.extern}/glm"
+		"%{IncludeDir.extern}/glm",
+		"%{IncludeDir.extern}/tinyobjloader"
 
 	}
 	links{

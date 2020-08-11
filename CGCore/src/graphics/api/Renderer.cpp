@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Renderer.h"
-#include"graphics/RenderCommand.h"
+#include"graphics/api/RenderCommand.h"
 namespace CGCore {
 	void Renderer::Init()
 	{
@@ -9,6 +9,10 @@ namespace CGCore {
 	void Renderer::BeginScene()
 	{
 		RenderCommand::Clear();
+	}
+	void Renderer::DrawIndexed(uint32_t count, const void* start)
+	{
+		RenderCommand::DrawIndexed(count, start);
 	}
 	void Renderer::EndScene()
 	{

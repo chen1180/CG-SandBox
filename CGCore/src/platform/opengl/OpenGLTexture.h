@@ -1,5 +1,5 @@
 #pragma once
-#include"graphics/Texture.h"
+#include"graphics/api/Texture.h"
 namespace CGCore {
 	class OpenGLTexture2D:public Texture2D
 	{

@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Application.h"
-#include"graphics/Renderer.h"
+#include"graphics/api/Renderer.h"
 
 namespace CGCore {
 
@@ -36,7 +36,13 @@ namespace CGCore {
 				}
 				m_ImguiLayer->End();
 			}
+			//TODO: remove later
+			//reset input 
+			Input::OnReset();
+
 			m_Window->OnUpdate();
+
+
 		}
 	}
 
@@ -75,12 +81,14 @@ namespace CGCore {
 		dispatcher.Dispatch<WindowCloseEvent>(EVENT_CB_FUNC(Application::OnWindowClose));
 		dispatcher.Dispatch<WindowResizeEvent>(EVENT_CB_FUNC(Application::OnWindowResize));
 		CG_CORE_INFO(event.ToString());
-
+		
 		for (auto it = m_LayerStack.begin();it != m_LayerStack.end();it++) {
 			if (event.Handled)
 				break;
 			(*it)->OnEvent(event);
 		}
+
+		Input::OnEvent(event);
 
 
 	}

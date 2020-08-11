@@ -1,5 +1,5 @@
 #pragma once
-#include"graphics/Shader.h"
+#include"graphics/api/Shader.h"
 namespace CGCore {
 	class OpenGLShader:public Shader
 	{

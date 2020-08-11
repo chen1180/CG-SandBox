@@ -7,6 +7,7 @@ namespace CGCore {
 	public:
 		static void Init();
 		static void BeginScene();
+		static void DrawIndexed(uint32_t count, const void* start = nullptr);
 		static void EndScene();
 		static void Submit();
 	};

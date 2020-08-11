@@ -3,7 +3,7 @@
 #include"platform/opengl/OpenGLBuffer.h"
 #include"RenderAPI.h"
 namespace CGCore {
-	Ref<VertexBuffer> VertexBuffer::Create(float* data, uint32_t size)
+	Ref<VertexBuffer> VertexBuffer::Create(const void* data, uint32_t size)
 	{
 		switch (RenderAPI::Get())
 		{
@@ -18,7 +18,7 @@ namespace CGCore {
 		return nullptr;
 	}
 
-	Ref<IndexBuffer> IndexBuffer::Create(unsigned int* data, uint32_t size)
+	Ref<IndexBuffer> IndexBuffer::Create(uint32_t* data, uint32_t size)
 	{
 		switch (RenderAPI::Get())
 		{

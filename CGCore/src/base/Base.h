@@ -13,7 +13,6 @@
 #define BIT(x) (1 << x)
 #define  EVENT_CB_FUNC(x) std::bind(&x, this, std::placeholders::_1)
 
-
 namespace CGCore {
 	template<typename T>
 	using Scope = std::unique_ptr<T>;
@@ -32,3 +31,6 @@ namespace CGCore {
 	}
 
 }
+
+//math
+#define EPSILON 0.0001f

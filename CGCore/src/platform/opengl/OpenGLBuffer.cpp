@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "OpenGLBuffer.h"
 namespace CGCore {
-	OpenGLVertexBuffer::OpenGLVertexBuffer(float* data, uint32_t size)
+	OpenGLVertexBuffer::OpenGLVertexBuffer(const void* data, uint32_t size)
 	{
 		glCreateBuffers(1, &m_RenderID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_RenderID);
@@ -17,15 +17,19 @@ namespace CGCore {
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
-	void OpenGLVertexBuffer::SetData(float* data)
+	void OpenGLVertexBuffer::SetData(const void* data,uint32_t size)
 	{
+		glBindBuffer(GL_ARRAY_BUFFER, m_RenderID);
+		glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
 	}
 
-	OpenGLIndexBuffer::OpenGLIndexBuffer(unsigned int * data, uint32_t size)
+	OpenGLIndexBuffer::OpenGLIndexBuffer(uint32_t* data, uint32_t size)
 	{
 		glCreateBuffers(1, &m_RenderID);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RenderID);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+
+		m_Count = size / sizeof(unsigned int);
 	}
 	void OpenGLIndexBuffer::Bind()
 	{

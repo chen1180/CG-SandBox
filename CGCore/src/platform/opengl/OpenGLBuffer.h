@@ -1,10 +1,10 @@
 #pragma once
-#include"graphics/Buffer.h"
+#include"graphics/api/Buffer.h"
 namespace CGCore{
 	class OpenGLVertexBuffer :public VertexBuffer
 	{
 	public:
-		OpenGLVertexBuffer( float* data,uint32_t size);
+		OpenGLVertexBuffer(const void* data,uint32_t size);
 		// Inherited via VertexBuffer 
 		virtual void Bind() override;
 
@@ -12,7 +12,7 @@ namespace CGCore{
 
 		virtual void SetLayout(const BufferLayout& layout) override { m_Layout = layout; };
 
-		virtual void SetData(float* data) override;
+		virtual void SetData(const void* data, uint32_t size) override;
 
 		virtual const BufferLayout& GetLayout() override { return m_Layout; }
 	private:
@@ -23,15 +23,18 @@ namespace CGCore{
 	class OpenGLIndexBuffer :public IndexBuffer
 	{
 	public:
-		OpenGLIndexBuffer(unsigned int* data, uint32_t size);
+		OpenGLIndexBuffer(uint32_t* data, uint32_t size);
 		// Inherited via VertexBuffer
 		virtual void Bind() override;
 
 		virtual void Unbind() override;
 
 		virtual void SetData(unsigned int* data) override;
+
+		virtual uint32_t GetCount() override { return m_Count; };
 	private:
 		uint32_t m_RenderID;
+		uint32_t m_Count=0;
 	};
 
 }

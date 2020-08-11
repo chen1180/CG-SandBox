@@ -1,7 +1,7 @@
 #pragma once
 #include"base/Base.h"
-#include"graphics/VertexArray.h"
-#include"graphics/Buffer.h"
+#include"graphics/api/VertexArray.h"
+#include"graphics/api/Buffer.h"
 namespace CGCore {
 	class OpenGLVertexArray:public VertexArray
 	{

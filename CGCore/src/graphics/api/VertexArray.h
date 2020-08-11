@@ -1,7 +1,7 @@
 #pragma once
 #include"base/Base.h"
 #include"glad/glad.h"
-#include"graphics/Buffer.h"
+#include"graphics/api/Buffer.h"
 namespace CGCore {
 	class VertexArray
 	{

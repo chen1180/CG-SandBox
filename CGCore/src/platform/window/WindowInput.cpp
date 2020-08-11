@@ -22,4 +22,12 @@ namespace CGCore {
 		return { float(x),float(y) };
 	}
 
+	void WindowInput::OnEventImpl(Event& e)
+	{
+		EventDispatcher dispatcher(e);
+		dispatcher.Dispatch<MouseScrolledEvent>(EVENT_CB_FUNC(WindowInput::OnMouseScrolled));
+	}
+
+
+
 }
