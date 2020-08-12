@@ -108,10 +108,11 @@ namespace CGCore {
 		virtual void Bind() = 0;
 		virtual void Unbind() = 0;
 		virtual void SetLayout(const BufferLayout& layout) = 0;
-		virtual void SetData(const void* data, uint32_t size) = 0;
+		virtual void SetData(void* data, uint32_t size) = 0;
 		virtual const BufferLayout& GetLayout() = 0;
 
 		static Ref<VertexBuffer> Create(const void* data, uint32_t size);
+		static Ref<VertexBuffer> Create(uint32_t size);
 			 
 	};
 

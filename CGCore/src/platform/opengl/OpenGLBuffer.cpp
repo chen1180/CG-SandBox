@@ -7,6 +7,11 @@ namespace CGCore {
 		glBindBuffer(GL_ARRAY_BUFFER, m_RenderID);
 		glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
 	}
+	OpenGLVertexBuffer::OpenGLVertexBuffer(uint32_t size) {
+		glCreateBuffers(1, &m_RenderID);
+		glBindBuffer(GL_ARRAY_BUFFER, m_RenderID);
+		glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
+	}
 	void OpenGLVertexBuffer::Bind()
 	{
 		
@@ -16,11 +21,14 @@ namespace CGCore {
 	{
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+
 	}
-	void OpenGLVertexBuffer::SetData(const void* data,uint32_t size)
+	void OpenGLVertexBuffer::SetData(void* data,uint32_t size)
 	{
+
 		glBindBuffer(GL_ARRAY_BUFFER, m_RenderID);
-		glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
 	}
 
 	OpenGLIndexBuffer::OpenGLIndexBuffer(uint32_t* data, uint32_t size)
@@ -29,7 +37,7 @@ namespace CGCore {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RenderID);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
 
-		m_Count = size / sizeof(unsigned int);
+		m_Count = size / sizeof(uint32_t);
 	}
 	void OpenGLIndexBuffer::Bind()
 	{

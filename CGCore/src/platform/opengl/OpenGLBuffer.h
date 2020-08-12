@@ -5,6 +5,7 @@ namespace CGCore{
 	{
 	public:
 		OpenGLVertexBuffer(const void* data,uint32_t size);
+		OpenGLVertexBuffer( uint32_t size);
 		// Inherited via VertexBuffer 
 		virtual void Bind() override;
 
@@ -12,7 +13,7 @@ namespace CGCore{
 
 		virtual void SetLayout(const BufferLayout& layout) override { m_Layout = layout; };
 
-		virtual void SetData(const void* data, uint32_t size) override;
+		virtual void SetData(void* data, uint32_t size) override;
 
 		virtual const BufferLayout& GetLayout() override { return m_Layout; }
 	private:
