@@ -20,6 +20,8 @@ namespace CGCore {
 
 		virtual void UploadUniformInt(const std::string& name, const uint32_t& value) override;
 
+		virtual void UploadUniformIntArray(const std::string& name,  int* value, int count) override;
+
 		virtual void UploadUniformMat2(const std::string& name, const glm::mat2& value) override;
 
 		virtual void UploadUniformMat3(const std::string& name, const glm::mat3& value) override;

@@ -15,6 +15,7 @@ namespace CGCore {
 		Ref<Shader> m_Shader;
 		Ref<Mesh> m_Mesh;
 		Ref<Camera> m_Camera;
+		Ref<Texture2D> m_Texture;
 		bool m_ShowImguiDemo = false;
     }; 
 

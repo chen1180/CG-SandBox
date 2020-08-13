@@ -149,6 +149,11 @@ namespace CGCore {
 		GLint location = glGetUniformLocation(m_ProgramID, name.c_str());
 		glUniform1i(location, value);
 	}
+	void OpenGLShader::UploadUniformIntArray(const std::string& name, int* value, int count)
+	{
+		GLint location = glGetUniformLocation(m_ProgramID, name.c_str());
+		glUniform1iv(location, count,value);
+	}
 	void OpenGLShader::UploadUniformMat2(const std::string& name, const glm::mat2& value)
 	{
 		GLint location = glGetUniformLocation(m_ProgramID, name.c_str());

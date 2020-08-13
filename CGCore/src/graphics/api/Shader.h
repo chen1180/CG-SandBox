@@ -20,6 +20,7 @@ namespace CGCore {
 		virtual void UploadUniformFloat3(const std::string& name, const glm::vec3& value)=0;
 
 		virtual void UploadUniformInt(const std::string& name, const uint32_t& value) = 0;
+		virtual void UploadUniformIntArray(const std::string& name , int* value, int count) = 0;
 
 		virtual void UploadUniformMat2(const std::string& name, const glm::mat2& value) = 0;
 		virtual void UploadUniformMat3(const std::string& name, const glm::mat3& value) = 0;

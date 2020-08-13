@@ -5,10 +5,11 @@ namespace CGCore {
 	{
 	public:
 		OpenGLTexture2D(const std::string& path);
+		OpenGLTexture2D(uint32_t width,uint32_t height);
 		// Inherited via Texture2D
 		virtual void Bind(uint32_t slot = 0) override;
 
-		virtual void SetData(void* data) override;
+		virtual void SetData(void* data,  uint32_t size) override;
 
 		virtual const uint32_t& GetID() override;
 
@@ -17,6 +18,10 @@ namespace CGCore {
 		virtual const uint32_t& GetHeight() override;
 
 		virtual void Unbind() override;
+
+		virtual bool operator==(const Texture& other) const override {
+			return m_RenderID== ((OpenGLTexture2D&)other).m_RenderID;
+		};
 	private:
 		unsigned int m_InternalFormat , m_DataFormat;
 		

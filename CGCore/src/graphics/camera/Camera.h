@@ -12,18 +12,18 @@ namespace CGCore {
 		EditorCamera
 	};
 
-	enum RenderPath
+	/*enum RenderPath
 	{
 		Forward=0,
 		Deferred,
 		Batch2D
 	};
 
-	enum RenderTarget
+	enum  RenderTarget
 	{
 		Texture=0,
 		Display0
-	};
+	};*/
 	class CameraController;
 	class Camera 
 	{

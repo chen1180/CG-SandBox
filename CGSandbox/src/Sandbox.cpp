@@ -20,7 +20,7 @@ namespace CGCore {
 		m_Camera->SetCameraControllerType(ControllerType::Camera2D);
 		*/
 		m_Mesh = ModelLoader::LoadModel("assets/mesh/sphere.obj");
-		
+		m_Texture= Texture2D::Create("assets/texture/Checkerboard.png");
 	}
 	void SandBox::OnDettach()
 	{
@@ -41,9 +41,10 @@ namespace CGCore {
 		Renderer2D::Reset2DStats();
 
 		Renderer2D::BeginScene(m_Camera.get());
-		for (int i = 0;i < 10.0f;i++) {
-			for (int j = 0;j < 10.0f;j++) {
-				Renderer2D::DrawQuad({ i + 1.2,j+1.2,2.0f }, { 1.0,1.0 }, { float(j)/10.0,(float)i / 10.0f,0.0,1.0 });
+		float size = 10.0f;
+		for (int i = 0;i < size;i++) {
+			for (int j = 0;j < size;j++) {
+				Renderer2D::DrawQuad({ i + 1.2,j+1.2,2.0f }, { 1.0,1.0 }, m_Texture,{ float(j)/ size,(float)i / size,0.0,1.0 });
 			}
 
 		}

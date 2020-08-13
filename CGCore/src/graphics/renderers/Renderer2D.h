@@ -3,17 +3,21 @@
 #include"graphics/api/Buffer.h"
 #include"graphics/api/VertexArray.h"
 #include"graphics/api/Shader.h"
+#include"graphics/api/RenderCommand.h"
+#include"graphics/api/Texture.h"
+
+#include"graphics/camera/Camera.h"
+
+#include"imgui.h"
 #include"glm/glm.hpp"
 #include"glm/gtc/matrix_transform.hpp"
-#include"graphics/camera/Camera.h"
+
 namespace CGCore {
-	struct QuadVertex {
-		glm::vec3 Position;
-		glm::vec4 Color;
-		glm::vec2 TexCoord;
-	};
-	
+
+	struct QuadVertex;
 	struct Renderer2DData;
+	
+	
 	class Renderer2D
 	{
 	public:
@@ -25,7 +29,7 @@ namespace CGCore {
 		static void OnImguiRender();
 		//Draw quad
 		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color);
-
+		static void DrawQuad(const glm::vec3& position, const glm::vec2& size,Ref<Texture> texture, const glm::vec4& tintColor=glm::vec4(1.0f));
 		struct Statistics {
 			uint32_t DrawCalls = 0;
 			uint32_t QuadCount = 0;
@@ -36,8 +40,8 @@ namespace CGCore {
 		};
 		static void Reset2DStats();
 	private:
-		static void Render();
-
+		static void Flush();
+		static void FlushAndReset();
 	private:
 		static Renderer2DData* s_RenderData;
 	};
