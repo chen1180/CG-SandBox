@@ -2,6 +2,7 @@
 #include "Camera.h"
 #include"Camera2D.h"
 #include"EditorCamera.h"
+#include"MayaCamera.h"
 #include"imgui/ImguiHelper.h"
 namespace CGCore {
 	Camera::Camera(float FOV, float Near, float Far, float aspect)
@@ -16,9 +17,9 @@ namespace CGCore {
 		, m_Near(Near)
 		, m_Far(Far)
 		, m_Orthographic(false)
-		, m_Scale(1)
+		, m_Scale(1.0f)
 	{
-		SetCameraControllerType(ControllerType::EditorCamera);
+		
 	}
 
 	Camera::Camera(float pitch, float yaw, const glm::vec3& position, float FOV, float Near, float Far, float aspect)
@@ -35,22 +36,21 @@ namespace CGCore {
 		, m_Orthographic(false)
 		, m_Scale(1.0f)
 	{
-		SetCameraControllerType(ControllerType::EditorCamera);
+
 	}
-	Camera::Camera(float aspectRatio, float scale) : m_Pitch(0)
-		, m_Yaw(0)
-		, m_Roll(0)
+	Camera::Camera(float aspectRatio, float scale) : m_Pitch(0.0f)
+		, m_Yaw(0.0f)
+		, m_Roll(0.0f)
 		, m_AspectRatio(aspectRatio)
 		, m_Scale(scale)
 		, m_ProjectionDirty(true)
 		, m_ViewDirty(true)
-		, m_Fov(0)
-		, m_Near(-10.0)
+		, m_Fov(0.0f)
+		, m_Near(-10.0f)
 		, m_Far(10.0f)
 		, m_Orthographic(true)
 		, m_Position(glm::vec3(0.0f))
 	{
-		SetCameraControllerType(ControllerType::Camera2D);
 	}
 	void Camera::OnImGui()
 	{
@@ -217,7 +217,7 @@ namespace CGCore {
 	}
 	glm::vec3 Camera::GetForwardDirection() const
 	{
-		glm::vec3 forward = glm::vec3(0.0f, 0.0f, 1.0f);
+		glm::vec3 forward = glm::vec3(0.0f, 0.0f, -1.0f);
 		forward = GetOrientation() * forward;
 		return forward;
 	}
@@ -251,12 +251,16 @@ namespace CGCore {
 		case ControllerType::Camera2D:
 			m_CameraController = CreateRef<CameraController2D>();
 			break;
+		case ControllerType::MayaCamera:
+			m_CameraController = CreateRef<MayaCameraController>();
+			break;
 		}
 	}
 	void Camera::UpdateViewMatrix()
 	{
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_Position) * glm::mat4(glm::quat(glm::vec3(m_Pitch, m_Yaw, m_Roll)));
-		m_ViewMatrix = glm::inverse(transform);
+		//glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_Position) * glm::mat4(glm::quat(glm::vec3(yaw,pitch,roll)));
+		//m_ViewMatrix = glm::inverse(transform);
+		m_ViewMatrix = glm::lookAt(m_Position, m_Position + GetForwardDirection(), {0.0,1.0,0.0});
 	}
 	void Camera::UpdateProjectionMatrix()
 	{

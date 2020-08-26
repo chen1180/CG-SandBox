@@ -169,11 +169,10 @@ namespace CGCore {
 			va->AddVertexBuffer(buffer);
 			va->SetIndexBuffer(ib);
 
-			auto mesh = CreateRef<Mesh>(va, ib);
 
 			delete[] vertices;
 			delete[] indices;
-			return mesh;
+			return CreateRef<Mesh>(va, ib);
 		}
 
 

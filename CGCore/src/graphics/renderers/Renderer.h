@@ -10,6 +10,7 @@ namespace CGCore {
 		static void DrawIndexed(uint32_t count, const void* start = nullptr);
 		static void EndScene();
 		static void Submit();
+		static void OnWindowReize(uint32_t width, uint32_t height);
 	};
 }
 

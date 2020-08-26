@@ -18,6 +18,9 @@ namespace CGCore {
 		inline static void DrawIndexed(uint32_t count, const void* start = nullptr) {
 			s_RenderAPI->DrawIndexed(count, start );
 		}
+		inline static void OnWindowResize(uint32_t width, uint32_t height) {
+			s_RenderAPI->OnWindowResize(width, height);
+		}
 	private:
 		static RenderAPI* s_RenderAPI;
 	};

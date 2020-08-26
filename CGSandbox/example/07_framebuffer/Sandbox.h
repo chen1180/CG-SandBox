@@ -16,6 +16,7 @@ namespace CGCore {
 		Ref<Mesh> m_Mesh,m_Cube;
 		Ref<Camera> m_Camera;
 		Ref<Texture2D> m_TextureCheckerBoard,m_TexturePig;
+		Ref<FrameBuffer> m_FrameBuffer;
 		bool m_ShowImguiDemo = false;
     }; 
 

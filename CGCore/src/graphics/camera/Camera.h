@@ -9,7 +9,8 @@ namespace CGCore {
 		ThirdPerson,
 		Simple,
 		Camera2D,
-		EditorCamera
+		EditorCamera,
+		MayaCamera
 	};
 
 	/*enum RenderPath
@@ -78,7 +79,6 @@ namespace CGCore {
 	private:
 		void UpdateViewMatrix();
 		void UpdateProjectionMatrix();
-
 		float m_Pitch;
 		float m_Yaw;
 		float m_Roll;

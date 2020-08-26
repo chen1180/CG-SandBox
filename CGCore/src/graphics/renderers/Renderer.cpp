@@ -23,4 +23,7 @@ namespace CGCore {
 	{
 
 	}
+	void Renderer::OnWindowReize(uint32_t width, uint32_t height) {
+		RenderCommand::OnWindowResize(width, height);
+	}
 }

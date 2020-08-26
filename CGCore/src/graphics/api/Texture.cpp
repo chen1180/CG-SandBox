@@ -31,4 +31,18 @@ namespace CGCore {
 		CG_CORE_ASSERT(false, "RenderAPI::API::Unknown");
 		return nullptr;
 	}
+	Ref<TextureCube> TextureCube::Create(const std::string& path)
+	{
+		switch (RenderAPI::Get())
+		{
+		case RenderAPI::API::OpenGL:
+			return CreateRef<OpenGLTextureCube>(path);
+		case RenderAPI::API::Vulkan:
+			break;
+		case RenderAPI::API::DirectX:
+			break;
+		}
+		CG_CORE_ASSERT(false, "RenderAPI::API::Unknown");
+		return nullptr;
+	}
 }

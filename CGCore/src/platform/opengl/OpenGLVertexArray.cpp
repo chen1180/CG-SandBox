@@ -38,7 +38,7 @@ namespace CGCore {
 		//if layout is zero, then error
 		const auto& layout = vertexBuffer->GetLayout();
 		CG_CORE_ASSERT(layout.GetElements().size(), "VertexBuffer layout is zero");
-		glBindVertexArray(m_RenderID);
+		Bind();
 		vertexBuffer->Bind();
 		uint32_t index = 0;
 
@@ -47,12 +47,14 @@ namespace CGCore {
 			glVertexAttribPointer(index, element.GetComponentSize(), ShaderDataTypeToOpenGLType(element.Type), element.Normalized?GL_TRUE:GL_FALSE, layout.GetStride(), (const void*)(element.Offset));
 			index++;	
 		}
+		Unbind();
 		m_VertexBuffers.push_back(vertexBuffer);
 	}
 	void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer>& indexBuffer)
 	{
-		glBindVertexArray(m_RenderID);
+		Bind();
 		indexBuffer->Bind();
+		Unbind();
 		m_IndexBuffer = indexBuffer;
 	}
 	const std::vector<Ref<VertexBuffer>>& OpenGLVertexArray::GetVertexBuffers()

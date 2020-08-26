@@ -71,7 +71,7 @@ namespace CGCore {
 			return false;
 
 		}
-		//Renderer::OnWindowReize(e.GetWidth(), e.GetHeight());
+		Renderer::OnWindowReize(e.GetWidth(), e.GetHeight());
 		m_WindowResize = false;
 		return false;
 	}
@@ -87,7 +87,6 @@ namespace CGCore {
 				break;
 			(*it)->OnEvent(event);
 		}
-
 		Input::OnEvent(event);
 
 

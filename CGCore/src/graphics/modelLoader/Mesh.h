@@ -41,7 +41,7 @@ namespace CGCore {
 	public:
 		Mesh();
 		Mesh(const Mesh& mesh);
-		Mesh(Ref<VertexArray>& vertexArray, Ref<IndexBuffer>& indexBuffer);
+		Mesh(Ref<VertexArray> vertexArray, Ref<IndexBuffer> indexBuffer);
 
 		virtual ~Mesh();
 		virtual void Draw();

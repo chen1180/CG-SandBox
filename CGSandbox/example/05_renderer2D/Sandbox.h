@@ -12,10 +12,10 @@ namespace CGCore {
 		virtual void OnDettach() override;
 		virtual void OnEvent(Event& e) override;
 	private:
-		Ref<Shader> m_Shader,m_phongShader;
-		Ref<Mesh> m_Mesh,m_Cube;
+		Ref<Shader> m_Shader;
+		Ref<Mesh> m_Mesh;
 		Ref<Camera> m_Camera;
-		Ref<Texture2D> m_TextureCheckerBoard,m_TexturePig;
+		Ref<Texture2D> m_Texture;
 		bool m_ShowImguiDemo = false;
     }; 
 

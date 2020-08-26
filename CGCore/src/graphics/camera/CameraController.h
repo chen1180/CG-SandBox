@@ -12,17 +12,16 @@ namespace CGCore {
 		CameraController() = default;
 		virtual ~CameraController() = default;
 
-		virtual void HandleMouse(Camera * camera, float dt, float xpos, float ypos) {};
-		virtual void HandleKeyboard(Camera * camera, float dt) {};
-		virtual void UpdateScroll(Camera * camera, float offset, float dt) { };
-
-		virtual void OnImGui() {};
-
+		virtual void HandleMouse(Camera* camera, float dt, float xpos, float ypos) {}
+		virtual void HandleKeyboard(Camera* camera, float dt) {}
+		virtual void UpdateScroll(Camera* camera, float offset, float dt) { }
+		virtual void OnImGui() {}
 		void SetMouseSensitivity(float value) { m_MouseSensitivity = value; }
 
 		const glm::vec3& GetVelocity() const { return m_Velocity; }
-
+	
 	protected:
+
 
 		glm::vec3 m_Velocity;
 		glm::vec2  m_RotateVelocity;

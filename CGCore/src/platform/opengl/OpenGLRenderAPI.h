@@ -10,6 +10,7 @@ namespace CGCore {
 		virtual void ClearColor(const glm::vec4& color)override;
 		// Inherited via RenderAPI
 		virtual void DrawIndexed(uint32_t count, const void* start=nullptr) override;
+		virtual void  OnWindowResize(uint32_t width, uint32_t height) override;
 	};
 }
 
