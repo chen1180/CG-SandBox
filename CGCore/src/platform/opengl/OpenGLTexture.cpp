@@ -7,9 +7,9 @@ namespace CGCore {
 	{
 		int width, height, channels;
 		stbi_uc* data = nullptr;
-		stbi_set_flip_vertically_on_load(1);
+		stbi_set_flip_vertically_on_load(true);
 		data = stbi_load(path.c_str(), &width, &height, &channels, 0);
-
+		stbi_set_flip_vertically_on_load(false);
 		CG_CORE_ASSERT(data, "Failed to load images!");
 		m_Width = width;
 		m_Height = height;
@@ -81,40 +81,48 @@ namespace CGCore {
 
 	OpenGLTextureCube::OpenGLTextureCube(const std::string& path)
 	{
-		int width, height, channels;
+		std::vector<std::string> faces
+		{
+			path+"/right.jpg",
+			path + "/left.jpg",
+				path + "/top.jpg",
+				path + "/bottom.jpg",
+				path + "/front.jpg",
+				path + "/back.jpg"
+		};
+
+		glGenTextures(1, &m_RenderID);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, m_RenderID);
+
+		int width, height, nrChannels;
 		stbi_uc* data = nullptr;
-		stbi_set_flip_vertically_on_load(1);
-		data = stbi_load(path.c_str(), &width, &height, &channels, 0);
-
-		CG_CORE_ASSERT(data, "Failed to load images!");
-		m_Width = width;
-		m_Height = height;
-		GLenum dataFormat, internalFormat;
-		if (channels == 3) {
-			internalFormat = GL_RGB8;
-			dataFormat = GL_RGB;
+		for (unsigned int i = 0; i < faces.size(); i++)
+		{
+			unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+			if (data)
+			{
+				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+					0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
+				);
+				stbi_image_free(data);
+			}
+			else
+			{
+				CG_CORE_ERROR("Cubemap tex failed to load at path: ");
+				stbi_image_free(data);
+			}
 		}
-		else if (channels == 4) {
-			internalFormat = GL_RGBA8;
-			dataFormat = GL_RGBA;
-		}
-		CG_CORE_ASSERT(internalFormat & dataFormat, "Unsupported image format!");
-		m_InternalFormat = internalFormat;
-		m_DataFormat = dataFormat;
-		glCreateTextures(GL_TEXTURE_2D, 1, &m_RenderID);
-		glTextureStorage2D(m_RenderID, 1, internalFormat, m_Width, m_Height);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-		glTextureParameteri(m_RenderID, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTextureParameteri(m_RenderID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTextureParameteri(m_RenderID, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTextureParameteri(m_RenderID, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glGenerateMipmap(GL_TEXTURE_2D);
-		glTextureSubImage2D(m_RenderID, 0, 0, 0, m_Width, m_Height, dataFormat, GL_UNSIGNED_BYTE, data);
 
-		stbi_image_free(data);
 	}
 	void OpenGLTextureCube::Bind(uint32_t slot)
 	{
+		glBindTexture(GL_TEXTURE_CUBE_MAP, m_RenderID);
 	}
 	void OpenGLTextureCube::SetData(void* data, uint32_t size)
 	{
@@ -136,5 +144,6 @@ namespace CGCore {
 	}
 	void OpenGLTextureCube::Unbind()
 	{
+		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 	}
 }

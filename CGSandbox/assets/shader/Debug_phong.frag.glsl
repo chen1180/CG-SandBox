@@ -10,6 +10,8 @@ uniform vec3 lightPos;
 uniform vec3 viewPos; 
 uniform vec3 lightColor;
 uniform vec3 objectColor;
+uniform samplerCube skybox;
+
 void main()
 {
     // ambient
@@ -28,7 +30,15 @@ void main()
     vec3 reflectDir = reflect(-lightDir, norm);  
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
     vec3 specular = specularStrength * spec * lightColor;  
-        
+
+    //reflection
+    vec3 I = normalize(fragPos - viewPos);
+    vec3 Reflect = reflect(I, normalize(normal));
+    vec3 reflectColor= texture(skybox, Reflect).rgb;
+    //refraction
+    float ratio = 1.00 / 1.52;
+    vec3 Refract= refract(I, normalize(normal), ratio);
+    vec3 refractColor = texture(skybox,Refract).rgb;
     vec3 result = (ambient + diffuse + specular) *objectColor;
-    FragColor = vec4(result, 1.0);
+    FragColor =vec4(reflectColor*refractColor,1.0f);
 } 
