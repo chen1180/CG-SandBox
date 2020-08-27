@@ -7,7 +7,7 @@ namespace CGCore {
 	{
 		CG_CLIENT_INFO("App layer attached");
 		m_Shader = Shader::Create(std::string("assets/shader/Debug_cube.vert.glsl"), std::string("assets/shader/Debug_cube.frag.glsl"));
-		m_phongShader= Shader::Create(std::string("assets/shader/Debug_phong.vert.glsl"), std::string("assets/shader/Debug_phong.frag.glsl"));
+		//m_phongShader= Shader::Create(std::string("assets/shader/Phong.vert.glsl"), std::string("assets/shader/Phong.frag.glsl"));
 		m_SkyboxShader= Shader::Create(std::string("assets/shader/Debug_skybox.vert.glsl"), std::string("assets/shader/Debug_skybox.frag.glsl"));
 
 		auto width=(float)Application::Get().GetWindow().GetWidth();
@@ -73,6 +73,8 @@ namespace CGCore {
 		m_skyboxVBO->SetLayout(layout);
 		m_skyboxVAO = VertexArray::Create();
 		m_skyboxVAO->AddVertexBuffer(m_skyboxVBO);
+		m_PhongRenderer = PhongRenderer();
+		m_PhongRenderer.Init();
 
 	}
 	void SandBox::OnDettach()
@@ -93,21 +95,10 @@ namespace CGCore {
 		RenderCommand::Clear();
 		RenderCommand::ClearColor();
 		{
-			//3D
-			m_phongShader->Bind();
-			m_phongShader->UploadUniformMat4("ViewMatrix", m_Camera->GetViewMatrix());
-			m_phongShader->UploadUniformMat4("ProjectionMatrix", m_Camera->GetProjectionMatrix());
-			m_phongShader->UploadUniformMat4("ModelMatrix", glm::translate(glm::mat4(1.0f), glm::vec3(-1.5, 0.5, -3.0f)));
-			m_phongShader->UploadUniformFloat3("lightPos", { 3.0 * sin(glfwGetTime()),5.0,0.0 });
-			m_phongShader->UploadUniformFloat3("lightColor", { 1.0,1.0,1.0 });
-			m_phongShader->UploadUniformFloat3("viewPos", m_Camera->GetPosition());
-			m_phongShader->UploadUniformFloat3("objectColor", { 0.0,0.0,1.0 });
-			m_CubeMap->Bind();
-
-			m_Mesh->Draw();
-			m_phongShader->UploadUniformFloat3("objectColor", { 1.0,0.0,1.0 });
-			m_phongShader->UploadUniformMat4("ModelMatrix", glm::translate(glm::mat4(1.0f), glm::vec3(1.5, 0.5, -3.0f)));
-			m_Cube->Draw();
+			m_PhongRenderer.BeginScene(m_Camera.get());
+			m_PhongRenderer.SubmitMesh(m_Cube, {1.0,0.0,-3.0});
+			m_PhongRenderer.SubmitMesh(m_Mesh, { 2.0,1.0,-3.0 });
+			m_PhongRenderer.EndScene();
 		}
 		{
 			//2D

@@ -19,6 +19,7 @@ namespace CGCore {
 	Application::~Application()
 	{
 		delete m_Window;
+		Renderer::EndScene();
 	}
 	void Application::Run()
 	{

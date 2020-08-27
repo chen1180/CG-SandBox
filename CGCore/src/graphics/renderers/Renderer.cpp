@@ -18,6 +18,7 @@ namespace CGCore {
 	}
 	void Renderer::EndScene()
 	{
+		Renderer2D::EndScene();
 	}
 	void Renderer::Submit()
 	{

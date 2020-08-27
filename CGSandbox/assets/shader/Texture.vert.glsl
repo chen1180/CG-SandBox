@@ -8,10 +8,10 @@ out float textureIndex;
 out vec2 texCoord;
 out vec4 color;
 
-uniform mat4 u_ViewMatrix,u_ProjectionMatrix;
+uniform mat4 uView,uProjection;
 void main()
 {
-	gl_Position =u_ProjectionMatrix*u_ViewMatrix* vec4(aPos, 1.0);
+	gl_Position =uProjection*uView* vec4(aPos, 1.0);
 	texCoord = aTexCoord; // set ourColor to the input color we got from the vertex data
 	textureIndex=aTextureIndex;
 	color=aColor;

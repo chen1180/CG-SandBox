@@ -85,7 +85,7 @@ namespace CGCore {
 						);
 				}
 
-				glm::vec4 colour = glm::vec4(0.0f);
+				glm::vec4 colour = glm::vec4(1.0f);
 
 				if (shape.mesh.material_ids[0] >= 0)
 				{

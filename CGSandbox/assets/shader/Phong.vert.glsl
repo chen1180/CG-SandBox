@@ -10,17 +10,16 @@ out vec3 normal,tangent;
 out vec4 color;
 out vec3 fragPos;
 
-uniform mat4 ViewMatrix,ProjectionMatrix,ModelMatrix;
+uniform mat4 uView,uProjection,uModel;
 
 void main()
 {
-   	gl_Position =ProjectionMatrix*ViewMatrix*ModelMatrix* vec4(aPos, 1.0);
+   	gl_Position =uProjection*uView*uModel* vec4(aPos, 1.0);
     texCoord = aTexCoord; // set ourColor to the input color we got from the vertex data
 	normal=aNormal;
 	tangent=aTangent;
 	color=aColor;
-	fragPos=vec3(ModelMatrix * vec4(aPos, 1.0f));;
-    normal = mat3(transpose(inverse(ModelMatrix))) * aNormal;  
-
+	fragPos=vec3(uModel * vec4(aPos, 1.0f));;
+    normal = mat3(transpose(inverse(uModel))) * aNormal;  
 
 }

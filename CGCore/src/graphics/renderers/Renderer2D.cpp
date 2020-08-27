@@ -38,7 +38,7 @@ namespace CGCore {
 		}
 	};
 
-	 Renderer2DData* Renderer2D::s_RenderData=nullptr;
+	Renderer2DData* Renderer2D::s_RenderData=nullptr;
 	void Renderer2D::Init()
 	{
 		s_RenderData =new Renderer2DData();
@@ -102,8 +102,8 @@ namespace CGCore {
 	void Renderer2D::BeginScene(Camera* camera)
 	{
 		s_RenderData->TextureShader->Bind();
-		s_RenderData->TextureShader->UploadUniformMat4("u_ViewMatrix", camera->GetViewMatrix());
-		s_RenderData->TextureShader->UploadUniformMat4("u_ProjectionMatrix", camera->GetProjectionMatrix());
+		s_RenderData->TextureShader->UploadUniformMat4("uView", camera->GetViewMatrix());
+		s_RenderData->TextureShader->UploadUniformMat4("uProjection", camera->GetProjectionMatrix());
 		
 		s_RenderData->QuadIndexCount = 0;
 		s_RenderData->QuadVertexPtr = s_RenderData->QuadVertexBasePtr;
