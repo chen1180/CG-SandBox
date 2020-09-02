@@ -126,6 +126,7 @@ namespace CGCore {
 		
 		{
 			m_PhongRenderer.BeginScene(m_Camera.get());
+			
 			m_DepthMap->Bind();
 			m_PhongRenderer.EndScene();
 		}
@@ -152,10 +153,10 @@ namespace CGCore {
 		ImGui::Checkbox("Imgui Demo",&m_ShowImguiDemo);
 
 		ImVec2 viewportSize = ImGui::GetContentRegionAvail();
+
 		ImGui::Text("Framebuffer-depth:");
 		auto depth = m_DepthMap->GetID();
 		ImGui::Image((void*)depth, { viewportSize.x,viewportSize.y });
-
 		if (m_ShowImguiDemo)
 			ImGui::ShowDemoWindow(&m_ShowImguiDemo);
 		ImGui::Separator();
