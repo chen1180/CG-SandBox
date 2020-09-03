@@ -8,8 +8,7 @@ namespace CGCore {
 	{
 		CG_CLIENT_INFO("App layer attached");
 		m_Shader = Shader::Create(std::string("assets/shader/Debug_cube.vert.glsl"), std::string("assets/shader/Debug_cube.frag.glsl"));
-		//m_phongShader= Shader::Create(std::string("assets/shader/Phong.vert.glsl"), std::string("assets/shader/Phong.frag.glsl"));
-		m_SkyboxShader= Shader::Create(std::string("assets/shader/Debug_skybox.vert.glsl"), std::string("assets/shader/Debug_skybox.frag.glsl"));
+		
 		m_DepthShader= Shader::Create(std::string("assets/shader/Debug_depth.vert.glsl"), std::string("assets/shader/Debug_depth.frag.glsl"));
 		auto width=(float)Application::Get().GetWindow().GetWidth();
 		auto height= (float)Application::Get().GetWindow().GetHeight();  
@@ -23,57 +22,7 @@ namespace CGCore {
 		m_Cube= ModelLoader::LoadModel("assets/mesh/sphere.obj");
 		m_TextureCheckerBoard = Texture2D::Create("assets/texture/Checkerboard.png");
 		m_TexturePig= Texture2D::Create("assets/texture/Texture.jpg");
-		//cubemap assets
-		m_CubeMap = TextureCube::Create("assets/texture/cubemap/skybox");
-		float skyboxVertices[] = {
-			// positions          
-			-1.0f,  1.0f, -1.0f,
-			-1.0f, -1.0f, -1.0f,
-			 1.0f, -1.0f, -1.0f,
-			 1.0f, -1.0f, -1.0f,
-			 1.0f,  1.0f, -1.0f,
-			-1.0f,  1.0f, -1.0f,
-
-			-1.0f, -1.0f,  1.0f,
-			-1.0f, -1.0f, -1.0f,
-			-1.0f,  1.0f, -1.0f,
-			-1.0f,  1.0f, -1.0f,
-			-1.0f,  1.0f,  1.0f,
-			-1.0f, -1.0f,  1.0f,
-
-			 1.0f, -1.0f, -1.0f,
-			 1.0f, -1.0f,  1.0f,
-			 1.0f,  1.0f,  1.0f,
-			 1.0f,  1.0f,  1.0f,
-			 1.0f,  1.0f, -1.0f,
-			 1.0f, -1.0f, -1.0f,
-
-			-1.0f, -1.0f,  1.0f,
-			-1.0f,  1.0f,  1.0f,
-			 1.0f,  1.0f,  1.0f,
-			 1.0f,  1.0f,  1.0f,
-			 1.0f, -1.0f,  1.0f,
-			-1.0f, -1.0f,  1.0f,
-
-			-1.0f,  1.0f, -1.0f,
-			 1.0f,  1.0f, -1.0f,
-			 1.0f,  1.0f,  1.0f,
-			 1.0f,  1.0f,  1.0f,
-			-1.0f,  1.0f,  1.0f,
-			-1.0f,  1.0f, -1.0f,
-
-			-1.0f, -1.0f, -1.0f,
-			-1.0f, -1.0f,  1.0f,
-			 1.0f, -1.0f, -1.0f,
-			 1.0f, -1.0f, -1.0f,
-			-1.0f, -1.0f,  1.0f,
-			 1.0f, -1.0f,  1.0f
-		};
-		m_skyboxVBO = VertexBuffer::Create(skyboxVertices,sizeof(skyboxVertices));
-		BufferLayout layout = { { "position",ShaderDataType::Float3 } };
-		m_skyboxVBO->SetLayout(layout);
-		m_skyboxVAO = VertexArray::Create();
-		m_skyboxVAO->AddVertexBuffer(m_skyboxVBO);
+	
 		m_PhongRenderer = PhongRenderer();
 		m_Light = CreateRef<Light>(Light(glm::vec3(1.0f) ,glm::vec3(3.0,1.0,-3.0 )));
 		m_PhongRenderer.Init();
@@ -82,6 +31,9 @@ namespace CGCore {
 		m_PhongRenderer.SubmitMesh(m_Mesh, { -3.0,2.0,0.0 });
 		m_PhongRenderer.SubmitMesh(m_Mesh, { 1.0,-3.0,0.0 });
 		m_PhongRenderer.SubmitMesh(m_Mesh, { -2.0,-1.0,0.0 });
+
+		SkyboxRenderer::Init();
+
 		//Depth buffer
 		glGenFramebuffers(1, &m_DepthMapFBO);
 		m_DepthMap = DepthTexture::Create((uint32_t)width, (uint32_t)height);
@@ -113,7 +65,7 @@ namespace CGCore {
 		glClear(GL_DEPTH_BUFFER_BIT);
 		
 		m_DepthShader->Bind();
-		GLfloat near_plane = -10.0f, far_plane = 10.0f;
+		GLfloat near_plane = 0.1f, far_plane = 100.0f;
 		glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
 		glm::mat4 lightView = glm::lookAt(m_Light->Position, glm::vec3(0.0f), glm::vec3(1.0));
 		m_DepthShader->UploadUniformMat4("uLightView",   lightView);
@@ -130,17 +82,9 @@ namespace CGCore {
 			m_PhongRenderer.EndScene();
 		}
 		{
-			//Cubemap
-
-			glDepthFunc(GL_LEQUAL);
-			m_SkyboxShader->Bind();
-			auto view = glm::mat4(glm::mat3(m_Camera->GetViewMatrix())); // remove translation from the view matrix
-			m_SkyboxShader->UploadUniformMat4("view", view);
-			m_SkyboxShader->UploadUniformMat4("projection", m_Camera->GetProjectionMatrix());
-			m_CubeMap->Bind();
-			m_skyboxVAO->Bind();
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-			glDepthFunc(GL_LESS);
+			//skybox
+			SkyboxRenderer::BeginScene(m_Camera.get());
+			SkyboxRenderer::EndScene();
 		}
 
 	}
