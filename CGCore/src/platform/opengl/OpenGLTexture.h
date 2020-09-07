@@ -56,5 +56,28 @@ namespace CGCore {
 		uint32_t m_RenderID;
 
 	};
+	class OpenGLDepthTexture : public DepthTexture {
+
+	public:
+		OpenGLDepthTexture(uint32_t width,uint32_t height);
+		// Inherited via DepthTexture
+		virtual void Bind(uint32_t slot = 0) override;
+
+		virtual const uint32_t& GetID() override;
+
+		virtual const uint32_t& GetWidth() override;
+
+		virtual const uint32_t& GetHeight() override;
+
+		virtual void Unbind() override;
+
+		virtual bool operator==(const Texture& other) const override {
+			return m_RenderID == ((OpenGLDepthTexture&)other).m_RenderID;
+		};
+	private:
+		uint32_t m_Width, m_Height;
+		uint32_t m_RenderID;
+
+	};
 }
 

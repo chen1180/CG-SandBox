@@ -37,6 +37,7 @@ namespace CGCore {
 			return Position == other.Position && TexCoords == other.TexCoords && Colours == other.Colours && Normal == other.Normal && Tangent == other.Tangent;
 		}
 	};
+
 	class Mesh {
 	public:
 		Mesh();
@@ -53,6 +54,11 @@ namespace CGCore {
 		Ref<VertexArray> m_VertexArray;
 		Ref<IndexBuffer> m_IndexBuffer;
 
+	};
+	//TODO: remove it after introducing entity.
+	struct Entity {
+		std::vector<Ref<Mesh>> Meshes;
+		Entity() = default;
 	};
 
 }

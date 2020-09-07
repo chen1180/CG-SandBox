@@ -146,4 +146,35 @@ namespace CGCore {
 	{
 		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 	}
+	OpenGLDepthTexture::OpenGLDepthTexture(uint32_t width, uint32_t height)
+	{
+		glGenTextures(1, &m_RenderID);
+		glBindTexture(GL_TEXTURE_2D, m_RenderID);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+			width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	}
+	void OpenGLDepthTexture::Bind(uint32_t slot )
+	{
+		glBindTextureUnit(slot, m_RenderID);
+	}
+	const uint32_t& OpenGLDepthTexture::GetID()
+	{
+		return m_RenderID;
+	}
+	const uint32_t& OpenGLDepthTexture::GetWidth()
+	{
+		return m_Width;
+	}
+	const uint32_t& OpenGLDepthTexture::GetHeight()
+	{
+		return m_Height;
+	}
+	void OpenGLDepthTexture::Unbind()
+	{
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
 }

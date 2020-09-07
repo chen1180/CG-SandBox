@@ -8,7 +8,6 @@ namespace CGCore {
 	{
 		CG_CLIENT_INFO("App layer attached");
 		m_Shader = Shader::Create(std::string("assets/shader/Debug_cube.vert.glsl"), std::string("assets/shader/Debug_cube.frag.glsl"));
-		
 		m_DepthShader= Shader::Create(std::string("assets/shader/Debug_depth.vert.glsl"), std::string("assets/shader/Debug_depth.frag.glsl"));
 		auto width=(float)Application::Get().GetWindow().GetWidth();
 		auto height= (float)Application::Get().GetWindow().GetHeight();  
@@ -18,7 +17,7 @@ namespace CGCore {
 		/*m_Camera = CreateRef<Camera>(width / height, 10.0f);
 		m_Camera->SetCameraControllerType(ControllerType::Camera2D); 
 		*/
-		m_Mesh = ModelLoader::LoadModel("assets/mesh/cube.obj");
+		m_Mesh = ModelLoader::LoadModel("assets/mesh/12140_Skull_v3_L2.obj");
 		m_Cube= ModelLoader::LoadModel("assets/mesh/sphere.obj");
 		m_TextureCheckerBoard = Texture2D::Create("assets/texture/Checkerboard.png");
 		m_TexturePig= Texture2D::Create("assets/texture/Texture.jpg");
@@ -27,10 +26,15 @@ namespace CGCore {
 		m_Light = CreateRef<Light>(Light(glm::vec3(1.0f) ,glm::vec3(3.0,1.0,-3.0 )));
 		m_PhongRenderer.Init();
 		m_PhongRenderer.SubmitLight(m_Light);
-		m_PhongRenderer.SubmitMesh(m_Cube, { 2.0,-0.5,0.0 });
-		m_PhongRenderer.SubmitMesh(m_Mesh, { -3.0,2.0,0.0 });
-		m_PhongRenderer.SubmitMesh(m_Mesh, { 1.0,-3.0,0.0 });
-		m_PhongRenderer.SubmitMesh(m_Mesh, { -2.0,-1.0,0.0 });
+		for (int i = 0;i < m_Mesh.Meshes.size();i++) {
+			m_PhongRenderer.SubmitMesh(m_Mesh.Meshes[i], { 2.0,-0.5,0.0 });
+		
+		}
+	
+		for (int i = 0;i < m_Cube.Meshes.size();i++) {
+			m_PhongRenderer.SubmitMesh(m_Cube.Meshes[i], { 2.0,-0.5,0.0 });
+
+		}
 
 		SkyboxRenderer::Init();
 

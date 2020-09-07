@@ -13,6 +13,7 @@
 #include"graphics/renderers/Renderer.h"
 #include"graphics/renderers/Renderer2D.h"
 #include"graphics/renderers/PhongRenderer.h"
+#include"graphics/renderers/SkyboxRenderer.h"
 //api
 #include"graphics/api/Shader.h"
 #include"graphics/api/Buffer.h"

@@ -6,7 +6,7 @@ namespace CGCore {
 	public:
 		virtual ~Texture() {};
 		virtual void Bind(uint32_t slot=0) = 0;
-		virtual void SetData(void* data,uint32_t size) = 0;
+		virtual void SetData(void* data, uint32_t size) {};
 		virtual const uint32_t& GetID() = 0;
 		virtual const uint32_t& GetWidth() = 0;
 		virtual const uint32_t& GetHeight() = 0;
@@ -23,6 +23,10 @@ namespace CGCore {
 	public:
 		static Ref<TextureCube> Create(const std::string& path);
 
+	};
+	class DepthTexture :public Texture {
+	public:
+		static Ref<DepthTexture> Create(uint32_t width, uint32_t height);
 	};
 }
 

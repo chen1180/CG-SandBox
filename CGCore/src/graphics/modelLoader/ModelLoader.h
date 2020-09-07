@@ -7,8 +7,8 @@ namespace CGCore{
 	class ModelLoader
 	{
 	public:
-		static Ref<Mesh> LoadModel(const std::string& path);
-		static Ref<Mesh> LoadOBJ(const std::string& path);
+		static Entity LoadModel(const std::string& path);
+		static Entity LoadOBJ(const std::string& path);
 	};
 
 

@@ -8,10 +8,9 @@ namespace CGCore {
 	};
 	struct Light
 	{
-		Light(const glm::vec3& position, const glm::vec3& direction, const glm::vec4& color=glm::vec4(1.0f) ):m_Color(color),m_Position(position),m_Direction(direction) {}
-		glm::vec4 m_Color;
-		glm::vec3 m_Position;
-		glm::vec3 m_Direction;
+		Light(const glm::vec3& position, const glm::vec3& direction, const glm::vec4& color=glm::vec4(1.0f) ):Color(color), Position(position) {}
+		glm::vec4 Color;
+		glm::vec3 Position;
 	};
 
 

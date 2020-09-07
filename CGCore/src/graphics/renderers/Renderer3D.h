@@ -5,6 +5,7 @@
 #include"graphics/api/Shader.h"
 #include"graphics/modelLoader/Mesh.h"
 #include"graphics/camera/Camera.h"
+#include"graphics/Light.h"
 namespace CGCore {
 	class Renderer3D
 	{

@@ -13,7 +13,7 @@ namespace CGCore {
 		virtual void OnEvent(Event& e) override;
 	private:
 		Ref<Shader> m_Shader,m_DepthShader;
-		Ref<Mesh> m_Mesh,m_Cube;
+		Entity m_Mesh,m_Cube;
 		Ref<Camera> m_Camera;
 		Ref<Texture2D> m_TextureCheckerBoard,m_TexturePig;
 		bool m_ShowImguiDemo = false;

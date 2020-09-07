@@ -6,7 +6,7 @@
 #include <tiny_obj_loader.h>
 
 namespace CGCore {
-	Ref<Mesh> ModelLoader::LoadOBJ(const std::string& path) {
+	Entity ModelLoader::LoadOBJ(const std::string& path) {
 
 		std::filesystem::path filepath(path);
 		std::string error;
@@ -27,6 +27,8 @@ namespace CGCore {
 		{
 			CG_CORE_ERROR(error);
 		}
+
+		auto entity =Entity();
 
 		for (const auto& shape : shapes)
 		{
@@ -172,9 +174,14 @@ namespace CGCore {
 
 			delete[] vertices;
 			delete[] indices;
-			return CreateRef<Mesh>(va, ib);
+			entity.Meshes.emplace_back(CreateRef<Mesh>(va, ib));
+			if (singleMesh)
+			{
+				
+				return entity;
+			}
 		}
-
+		return entity;
 
 	}
 
