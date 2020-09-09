@@ -17,7 +17,7 @@ namespace CGCore {
 		/*m_Camera = CreateRef<Camera>(width / height, 10.0f);
 		m_Camera->SetCameraControllerType(ControllerType::Camera2D); 
 		*/
-		m_Mesh = ModelLoader::LoadModel("assets/mesh/12140_Skull_v3_L2.obj");
+		m_Mesh = ModelLoader::LoadModel("assets/mesh/cube.obj");
 		m_Cube= ModelLoader::LoadModel("assets/mesh/sphere.obj");
 		m_TextureCheckerBoard = Texture2D::Create("assets/texture/Checkerboard.png");
 		m_TexturePig= Texture2D::Create("assets/texture/Texture.jpg");
@@ -27,8 +27,10 @@ namespace CGCore {
 		m_PhongRenderer.Init();
 		m_PhongRenderer.SubmitLight(m_Light);
 		for (int i = 0;i < m_Mesh.Meshes.size();i++) {
-			m_PhongRenderer.SubmitMesh(m_Mesh.Meshes[i], { 2.0,-0.5,0.0 });
-		
+			m_PhongRenderer.SubmitMesh(m_Mesh.Meshes[i], { 5.0,-0.5,0.0 });
+			m_PhongRenderer.SubmitMesh(m_Mesh.Meshes[i], { -2.0,-2.5,0.0 });
+			m_PhongRenderer.SubmitMesh(m_Mesh.Meshes[i], { 1.0,-6.5,0.0 });
+
 		}
 	
 		for (int i = 0;i < m_Cube.Meshes.size();i++) {
