@@ -40,16 +40,6 @@ namespace CGCore {
 
 		SkyboxRenderer::Init();
 
-		//Depth buffer
-		glGenFramebuffers(1, &m_DepthMapFBO);
-		m_DepthMap = DepthTexture::Create((uint32_t)width, (uint32_t)height);
-
-		glBindFramebuffer(GL_FRAMEBUFFER, m_DepthMapFBO);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_DepthMap->GetID(), 0);
-		glDrawBuffer(GL_NONE);
-		glReadBuffer(GL_NONE);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 	}
 	void SandBox::OnDettach()
 	{
@@ -66,25 +56,11 @@ namespace CGCore {
 			}
 		
 		}
-		//Depth map
-		glBindFramebuffer(GL_FRAMEBUFFER, m_DepthMapFBO);
-		glClear(GL_DEPTH_BUFFER_BIT);
-		
-		m_DepthShader->Bind();
-		GLfloat near_plane = 0.1f, far_plane = 100.0f;
-		glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
-		glm::mat4 lightView = glm::lookAt(m_Light->Position, glm::vec3(0.0f), glm::vec3(1.0));
-		m_DepthShader->UploadUniformMat4("uLightView",   lightView);
-		m_DepthShader->UploadUniformMat4("uLightProjection", lightProjection);
-		m_PhongRenderer.EndScene(m_DepthShader);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 		RenderCommand::Clear();
 		RenderCommand::ClearColor();
 		
 		{
 			m_PhongRenderer.BeginScene(m_Camera.get());
-			m_DepthMap->Bind();
 			m_PhongRenderer.EndScene();
 		}
 		{
@@ -103,7 +79,7 @@ namespace CGCore {
 
 		ImVec2 viewportSize = ImGui::GetContentRegionAvail();
 		ImGui::Text("Framebuffer-depth:");
-		auto depth = m_DepthMap->GetID();
+		auto depth = ShadowRenderer::GetShadowMap()->GetID();
 		ImGui::Image((void*)depth, { viewportSize.x,viewportSize.y });
 
 		if (m_ShowImguiDemo)

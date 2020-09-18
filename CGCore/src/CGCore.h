@@ -14,6 +14,7 @@
 #include"graphics/renderers/Renderer2D.h"
 #include"graphics/renderers/PhongRenderer.h"
 #include"graphics/renderers/SkyboxRenderer.h"
+#include"graphics/renderers/ShadowRenderer.h"
 //api
 #include"graphics/api/Shader.h"
 #include"graphics/api/Buffer.h"

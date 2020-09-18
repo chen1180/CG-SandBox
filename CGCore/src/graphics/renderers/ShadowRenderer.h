@@ -1,16 +1,19 @@
 #pragma once
 #include"Renderer3D.h"
+#include"graphics/api/FrameBuffer.h"
 namespace CGCore {
 	struct ShadowRendererData;
-	class ShadowRenderer :public Renderer3D
+	class ShadowRenderer
 	{
 	public:
-		ShadowRenderer() { Init(); }
-		~ShadowRenderer() { ShutDown(); }
-		virtual void Init() override;
-		virtual void ShutDown() override;
-		virtual void BeginScene(Camera* camera) override;
-		virtual void EndScene() override;
+		ShadowRenderer() { }
+		~ShadowRenderer() { }
+		static void Init() ;
+		static void ShutDown() ;
+		static void BeginScene(const  Ref<Light>& light) ;
+		static void EndScene() ;
+		static const Ref<Texture>& GetShadowMap();
+		static const Ref<Shader>& GetShader();
 	private:
 		static ShadowRendererData* s_ShadowData;
 	};

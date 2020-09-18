@@ -3,7 +3,7 @@
 	url = https://github.com/glfw/glfw
 [submodule "CGCore\\extern\\imgui"]
 	path = CGCore\\extern\\imgui
-	url = https://github.com/ocornut/imgui
+	url = https://github.com/ocornut/imgui/tree/docking
 [submodule "CGCore\\extern\\spdlog"]
 	path = CGCore\\extern\\spdlog
 	url = https://github.com/gabime/spdlog

@@ -18,9 +18,6 @@ namespace CGCore {
 		Ref<Texture2D> m_TextureCheckerBoard,m_TexturePig;
 		bool m_ShowImguiDemo = false;
 		PhongRenderer m_PhongRenderer;
-
-		GLuint m_DepthMapFBO;
-		Ref<DepthTexture> m_DepthMap;
 		Ref<Light> m_Light;
     }; 
 

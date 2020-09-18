@@ -6,7 +6,10 @@ workspace "CG-Sandbox"
 		"Dist"
 	}
 	startproject "CGSandbox"
-	--buildoptions { "/MP" }
+	flags
+	{
+		"MultiProcessorCompile"
+	}
 
 
 outputdir="%{cfg.buildcfg}_%{cfg.system}_%{cfg.architecture}"
