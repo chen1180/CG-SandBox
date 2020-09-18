@@ -4,9 +4,8 @@
 #include "graphics/api/Buffer.h"
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
-
 namespace CGCore {
-	Entity ModelLoader::LoadOBJ(const std::string& path) {
+	Entity ModelLoader::LoadOBJ(const std::string& path, Scene* scene) {
 
 		std::filesystem::path filepath(path);
 		std::string error;
@@ -16,7 +15,7 @@ namespace CGCore {
 		std::vector<tinyobj::shape_t> shapes;
 		std::vector<tinyobj::material_t> materials;
 
-		bool singleMesh = shapes.size() == 1;
+	
 
 		bool ok = tinyobj::LoadObj(
 			&attrib, &shapes, &materials,&warn, &error,
@@ -27,8 +26,9 @@ namespace CGCore {
 		{
 			CG_CORE_ERROR(error);
 		}
-
-		auto entity =Entity();
+		
+		auto entity = scene->CreateEntity();
+		bool singleMesh = shapes.size() == 1;
 
 		for (const auto& shape : shapes)
 		{
@@ -171,15 +171,23 @@ namespace CGCore {
 			va->AddVertexBuffer(buffer);
 			va->SetIndexBuffer(ib);
 
-
-			delete[] vertices;
-			delete[] indices;
-			entity.Meshes.emplace_back(CreateRef<Mesh>(va, ib));
+			auto mesh = CreateRef<Mesh>(va, ib);
 			if (singleMesh)
 			{
 				
-				return entity;
+				entity.AddComponent<MeshComponent>(mesh);
+				entity.AddComponent<TransformComponent>();
 			}
+			else {
+				//TODO: Add Hierachy component
+				auto meshEntity = scene->CreateEntity();
+				meshEntity.AddComponent<MeshComponent>(mesh);
+				meshEntity.AddComponent<TransformComponent>();
+				meshEntity.AddComponent<Hierarchy>(entity.GetEntityHandler());
+			}
+
+			delete[] vertices;
+			delete[] indices;
 		}
 		return entity;
 

@@ -1,0 +1,2 @@
+[submodule "CGCore/extern/imgui"]
+	url = https://github.com/TheCherno/imgui

@@ -1,5 +1,6 @@
 #pragma once
 #include "Renderer3D.h"
+#include"graphics/api/FrameBuffer.h"
 namespace CGCore {
 	struct PhongRendererData;
 	class PhongRenderer :public Renderer3D
@@ -15,6 +16,7 @@ namespace CGCore {
 		void EndScene(Ref<Shader> shader);
 		void SubmitMesh(Ref<Mesh>, const glm::vec3& position, const glm::vec3& size = glm::vec3(1.0f));
 		void SubmitLight(const Ref<Light>& light);
+		Ref<FrameBuffer> GetFrameBuffer();
 	private:
 		static PhongRendererData* s_PhongRenderData;
 	};

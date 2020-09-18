@@ -56,10 +56,10 @@ namespace CGCore {
 
 	};
 	//TODO: remove it after introducing entity.
-	struct Entity {
-		std::vector<Ref<Mesh>> Meshes;
-		Entity() = default;
-	};
+	//struct Entity {
+		//std::vector<Ref<Mesh>> Meshes;
+		//Entity() = default;
+	//};
 
 }
 namespace std

@@ -17,8 +17,9 @@ namespace CGCore {
 
 		virtual const FrameBufferSpecs& GetSpecification() const override { return m_FrameBufferSpecs; }
 
+		uint32_t GetColor() { return  m_ColorAttachment;}
 		void Invalidate();
-
+		
 	private:
 		void AddColorDepthStencilMap();
 		void AddDepthMap();

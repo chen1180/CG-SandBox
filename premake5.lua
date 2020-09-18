@@ -51,7 +51,8 @@ project "CGCore"
 		"%{IncludeDir.extern}/glfw/include",
 		"%{IncludeDir.extern}/Glad/include",
 		"%{IncludeDir.extern}/glm",
-		"%{IncludeDir.extern}/tinyobjloader"
+		"%{IncludeDir.extern}/tinyobjloader",
+		"%{IncludeDir.extern}/entt/single_include"
 	}
 	links{
 		"glfw",
@@ -104,7 +105,56 @@ project "CGSandbox"
 		"%{IncludeDir.extern}/glfw/include",
 		"%{IncludeDir.extern}/Glad/include",
 		"%{IncludeDir.extern}/glm",
-		"%{IncludeDir.extern}/tinyobjloader"
+		"%{IncludeDir.extern}/tinyobjloader",
+		"%{IncludeDir.extern}/entt/single_include"
+
+	}
+	links{
+		"CGCore"
+	}
+		filter "system:windows"
+		defines{
+		"_CRT_SECURE_NO_WARNINGS"
+		}
+	filter "configurations:Debug"
+		defines {"CG_DEBUG"}
+		runtime "Debug"
+		symbols "On"
+	filter "configurations:Release"
+		defines "CG_RELEASE"
+		runtime "Release"
+		optimize "On"
+	filter "configurations:Dist"
+		defines "CG_DIST"
+		runtime "Release"
+		optimize "On"
+project "CGEditor"
+	location "CGEditor"
+	kind "ConsoleApp"
+	language "C++"
+	cppdialect "c++17"
+	systemversion "latest"
+	staticruntime "on"
+
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+	
+	files
+	{
+		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.cpp"
+	}
+
+	includedirs{
+		"CGCore/src",
+		"CGCore/extern/spdlog/include",
+		"%{IncludeDir.extern}/stb_img/",
+		"%{IncludeDir.extern}/imgui/",
+		"%{IncludeDir.extern}/glfw/include",
+		"%{IncludeDir.extern}/Glad/include",
+		"%{IncludeDir.extern}/glm",
+		"%{IncludeDir.extern}/tinyobjloader",
+		"%{IncludeDir.extern}/entt/single_include"
 
 	}
 	links{

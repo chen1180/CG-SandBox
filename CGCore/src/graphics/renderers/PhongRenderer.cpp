@@ -2,7 +2,7 @@
 #include "PhongRenderer.h"
 #include"ShadowRenderer.h"
 #include"GLFW/glfw3.h"
-
+#include"graphics/api/RenderCommand.h"
 namespace CGCore {
 	struct CommandBuffer {
 		Ref<Mesh> Mesh=nullptr;
@@ -18,7 +18,7 @@ namespace CGCore {
 		std::vector<CommandBuffer> CommandBuffer;
 		std::vector<Ref<Light>> LightSources;
 		Ref<Shader> PhongShader;
-
+		Ref<FrameBuffer> FrameBuffer;
 		PhongRendererData() = default;
 		~PhongRendererData() {
 		}
@@ -31,8 +31,10 @@ namespace CGCore {
 		s_PhongRenderData->PhongShader= Shader::Create(std::string("assets/shader/Phong.vert.glsl"), std::string("assets/shader/Phong.frag.glsl"));
 		s_PhongRenderData->CommandBuffer.reserve(100);
 		s_PhongRenderData->LightSources.reserve(32);
+
 		//TODO: test Shadow renderer, remove in later stage
 		ShadowRenderer::Init();
+		s_PhongRenderData->FrameBuffer = FrameBuffer::Create(FrameBufferSpecs());
 	}
 
 	void PhongRenderer::ShutDown()
@@ -62,6 +64,11 @@ namespace CGCore {
 		s_PhongRenderData->LightSources.emplace_back(light);
 	}
 
+	 Ref<FrameBuffer> PhongRenderer::GetFrameBuffer()
+	{
+		return s_PhongRenderData->FrameBuffer;
+	}
+
 	void PhongRenderer::EndScene()
 	{
 		//TODO: remove after shadow test.
@@ -71,8 +78,8 @@ namespace CGCore {
 		EndScene(ShadowRenderer::GetShader());
 		ShadowRenderer::EndScene();
 
-		s_PhongRenderData->PhongShader->Bind();
-		 
+
+		s_PhongRenderData->PhongShader->Bind(); 
 		for (auto& light : s_PhongRenderData->LightSources) {
 			//TODO: remove after shadowmap test
 			GLfloat near_plane = 0.1f, far_plane = 100.0f;
@@ -84,6 +91,9 @@ namespace CGCore {
 			s_PhongRenderData->PhongShader->UploadUniformFloat3("lightColor", light->Color);
 		}
 		
+		s_PhongRenderData->FrameBuffer->Bind();
+		RenderCommand::Clear();
+		RenderCommand::ClearColor();
 		//TODO: optisize in the future. Bind shadow map
 		ShadowRenderer::GetShadowMap()->Bind();
 
@@ -91,6 +101,8 @@ namespace CGCore {
 			s_PhongRenderData->PhongShader->UploadUniformMat4("uModel", glm::translate(glm::mat4(1.0f), command.Position)*glm::scale(glm::mat4(1.0f),command.Size));
 			command.Mesh->Draw(); 
 		}
+		ShadowRenderer::GetShadowMap()->Unbind();
+
 	}
 	void PhongRenderer::EndScene(Ref<Shader> shader)
 	{
@@ -99,6 +111,7 @@ namespace CGCore {
 			shader->UploadUniformMat4("uModel", glm::translate(glm::mat4(1.0f), command.Position) * glm::scale(glm::mat4(1.0f), command.Size));
 			command.Mesh->Draw();
 		}
+
 	}
 }
 
