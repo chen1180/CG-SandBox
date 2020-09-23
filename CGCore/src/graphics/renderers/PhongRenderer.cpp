@@ -2,8 +2,10 @@
 #include "PhongRenderer.h"
 #include"ShadowRenderer.h"
 #include"SkyboxRenderer.h"
-#include"GLFW/glfw3.h"
 #include"graphics/api/RenderCommand.h"
+
+#include"GLFW/glfw3.h"
+#include"imgui.h"
 namespace CGCore {
 	struct CommandBuffer {
 		Ref<Mesh> Mesh=nullptr;
@@ -22,6 +24,9 @@ namespace CGCore {
 		Ref<Shader> PhongShader;
 		Ref<FrameBuffer> FrameBuffer;
 		Ref<UniformBuffer> LightUniformBuffer;
+
+		//Statistics
+		PhongRenderer::Statistics Stats;
 		PhongRendererData() = default;
 		~PhongRendererData() {
 		}
@@ -50,6 +55,9 @@ namespace CGCore {
 
 	void PhongRenderer::BeginScene(Camera* camera)
 	{
+		//Init statistics:
+		Reset3DStats();
+
 		s_PhongRenderData->PhongShader->Bind();
 		s_PhongRenderData->PhongShader->UploadUniformMat4("uView", camera->GetViewMatrix());
 		s_PhongRenderData->PhongShader->UploadUniformMat4("uProjection", camera->GetProjectionMatrix());
@@ -84,14 +92,15 @@ namespace CGCore {
 		//TODO: remove after shadow test.
 		for (auto& light : s_PhongRenderData->LightSources) {
 			ShadowRenderer::BeginScene(light);
-		}
-		//TODO: for temperory test shadow map
-		for (auto& command : s_PhongRenderData->CommandBuffer) {
-			ShadowRenderer::GetShader()->UploadUniformMat4("uModel", command.Transform);
-			command.Mesh->Draw();
-		}
-		ShadowRenderer::EndScene();
+			//TODO: for temperory test shadow map
+			for (auto& command : s_PhongRenderData->CommandBuffer) {
+				ShadowRenderer::GetShader()->UploadUniformMat4("uModel", command.Transform);
+				command.Mesh->Draw();
+				s_PhongRenderData->Stats.DrawCalls++;
+			}
+			ShadowRenderer::EndScene();
 
+		}
 
 		s_PhongRenderData->PhongShader->Bind(); 
 		for (auto& light : s_PhongRenderData->LightSources) {
@@ -101,8 +110,6 @@ namespace CGCore {
 			glm::mat4 lightView = glm::lookAt(glm::vec3(light.Position), glm::vec3(0.0f), glm::vec3(1.0));
 			s_PhongRenderData->PhongShader->UploadUniformMat4("uLightView", lightView);
 			s_PhongRenderData->PhongShader->UploadUniformMat4("uLightProjection", lightProjection);
-			s_PhongRenderData->PhongShader->UploadUniformFloat3("lightPos", light.Position);
-			s_PhongRenderData->PhongShader->UploadUniformFloat3("lightColor", light.Color);
 		}
 		
 		s_PhongRenderData->FrameBuffer->Bind();
@@ -124,10 +131,23 @@ namespace CGCore {
 		for (auto& command : s_PhongRenderData->CommandBuffer) {
 			s_PhongRenderData->PhongShader->UploadUniformMat4("uModel", command.Transform);
 			command.Mesh->Draw(); 
+			s_PhongRenderData->Stats.DrawCalls++;
 		}
 
 		ShadowRenderer::GetShadowMap()->Unbind();
 
+	}
+
+	void PhongRenderer::Reset3DStats() {
+		memset(&s_PhongRenderData->Stats, 0, sizeof(PhongRenderer::Statistics));
+	}
+
+	void PhongRenderer::OnImguiRender() {
+		ImGui::Begin("Phong Renderer stats:");
+		ImGui::Text("DrawCalls: %d", s_PhongRenderData->Stats.DrawCalls);
+		ImGui::Text("Light: %d", s_PhongRenderData->LightSources.size());
+		ImGui::Text("Mesh: %d", s_PhongRenderData->CommandBuffer.size());
+		ImGui::End();
 	}
 }
 

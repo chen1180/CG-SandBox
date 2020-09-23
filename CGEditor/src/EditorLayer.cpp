@@ -182,6 +182,7 @@ namespace CGCore {
 		m_Camera->OnImGui();
 		ImGui::End();
 		Renderer2D::OnImguiRender();
+		m_PhongRenderer.OnImguiRender();
 
 		ImGui::Begin("GameWindow");
 		{

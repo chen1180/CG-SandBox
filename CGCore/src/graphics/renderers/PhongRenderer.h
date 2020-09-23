@@ -16,7 +16,17 @@ namespace CGCore {
 
 		void SubmitMesh(Ref<Mesh>, const glm::mat4& transform);
 		void SubmitLight(const Light& light);
+		void OnImguiRender();
+		void Reset3DStats();
 		Ref<FrameBuffer> GetFrameBuffer();
+
+		struct Statistics {
+			uint32_t DrawCalls = 0;
+			uint32_t MeshCount = 0;
+			uint32_t LightCount = 0;
+
+		};
+
 	private:
 		static PhongRendererData* s_PhongRenderData;
 
