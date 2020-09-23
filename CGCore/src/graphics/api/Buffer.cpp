@@ -48,5 +48,24 @@ namespace CGCore {
 		CG_CORE_ASSERT(false, "RenderAPI::API::Unknown");
 		return nullptr;
 	}
+	
+	uint32_t UniformBuffer::GetHandle()
+	{
+		return uint32_t();
+	}
 
+	Ref<UniformBuffer> UniformBuffer::Create(const void* data, uint32_t size)
+	{
+		switch (RenderAPI::Get())
+		{
+		case RenderAPI::API::OpenGL:
+			return CreateRef<OpenGLUniformBuffer>(data, size);
+		case RenderAPI::API::Vulkan:
+			break;
+		case RenderAPI::API::DirectX:
+			break;
+		}
+		CG_CORE_ASSERT(false, "RenderAPI::API::Unknown");
+		return nullptr;
+	}
 }

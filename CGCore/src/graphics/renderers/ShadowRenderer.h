@@ -10,7 +10,7 @@ namespace CGCore {
 		~ShadowRenderer() { }
 		static void Init() ;
 		static void ShutDown() ;
-		static void BeginScene(const  Ref<Light>& light) ;
+		static void BeginScene(const  Light& light) ;
 		static void EndScene() ;
 		static const Ref<Texture>& GetShadowMap();
 		static const Ref<Shader>& GetShader();

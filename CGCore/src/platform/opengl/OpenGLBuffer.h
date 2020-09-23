@@ -38,6 +38,29 @@ namespace CGCore{
 		uint32_t m_Count=0;
 	};
 
+	class OpenGLUniformBuffer :public UniformBuffer {
+	public:
+		OpenGLUniformBuffer(const void* data, uint32_t size);
+		~OpenGLUniformBuffer();
+		// Inherited via UniformBuffer
+		virtual void Bind(uint32_t slot, Shader* shader, const std::string& name) override;
+
+		virtual void Unbind() override;
+
+		virtual void SetData(const void* data, uint32_t size) override;
+
+		virtual void UpdateSubData(const void* data, uint32_t size, uint32_t offset) override;
+
+		virtual uint32_t GetCount() override;
+
+		virtual uint32_t GetHandle() override;
+
+	private:
+		uint8_t* m_Data = nullptr;
+		uint32_t m_Handle;
+		uint32_t m_Size = 0;
+	};
+
 }
 
 

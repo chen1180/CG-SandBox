@@ -78,6 +78,10 @@ namespace CGCore {
 	{
 		glUseProgram(0);
 	}
+	uint32_t OpenGLShader::GetHandle()
+	{
+		return m_ProgramID;
+	}
 	uint32_t OpenGLShader::Preprocess(const char* source, ShaderType type)
 	{
 		// Create an empty vertex shader handle
@@ -105,7 +109,7 @@ namespace CGCore {
 
 		GLint isCompiled = 0;
 		glGetShaderiv(shaderID, GL_COMPILE_STATUS, &isCompiled);
-		if (isCompiled == GL_FALSE)
+		if (isCompiled == GL_FALSE) 
 		{
 			GLint maxLength = 0;
 			glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &maxLength);

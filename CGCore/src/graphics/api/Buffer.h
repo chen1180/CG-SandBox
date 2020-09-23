@@ -2,6 +2,7 @@
 #include"base/Base.h"
 #include"glad/glad.h"
 namespace CGCore {
+
 	enum class ShaderDataType {
 		None = 0,Int,Int2,Int3,Int4,Float, Float2, Float3, Float4,Bool,Mat3,Mat4
 	};
@@ -127,5 +128,17 @@ namespace CGCore {
 
 		static Ref<IndexBuffer> Create(unsigned int* data, uint32_t size);
 	};
-
+	class Shader;
+	class UniformBuffer
+	{
+	public:
+		virtual ~UniformBuffer() {};
+		virtual void Bind(uint32_t slot, Shader* shader, const std::string& name) = 0;
+		virtual void Unbind() = 0;
+		virtual void SetData(const void* data, uint32_t size) = 0;
+		virtual void UpdateSubData(const void* data, uint32_t size,uint32_t offset) = 0;
+		virtual uint32_t GetCount() = 0;
+		virtual uint32_t GetHandle() = 0;
+		static Ref<UniformBuffer> Create( const void* data, uint32_t size);
+	};
 }

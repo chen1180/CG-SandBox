@@ -15,6 +15,7 @@ namespace CGCore {
 		virtual void ShutDown() {};
 		virtual void BeginScene(Camera* camera) {};
 		virtual void EndScene() {};
+		virtual void SetSystemUniformBuffer() {};
 	};
 
 }

@@ -12,8 +12,8 @@ namespace CGCore {
 		virtual void Resize(uint32_t width, uint32_t height)override;
 
 		virtual const uint32_t& GetRendererID() const override { return m_RendererID; }
-		virtual const Ref<Texture>& GetColorAttachment() const override { return m_FramebufferData.at(FrameBufferComponent::Color); }
-		virtual const Ref<Texture>& GetDepthAttachment() const override { return m_FramebufferData.at(FrameBufferComponent::Depth); }
+		virtual const Ref<Texture>& GetColorAttachment() const override { return m_FramebufferData.at((uint8_t)FrameBufferComponent::Color); }
+		virtual const Ref<Texture>& GetDepthAttachment() const override { return m_FramebufferData.at((uint8_t)FrameBufferComponent::Depth); }
 
 		virtual const FrameBufferSpecs& GetSpecification() const override { return m_FrameBufferSpecs; }
 

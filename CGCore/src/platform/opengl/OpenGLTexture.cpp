@@ -26,6 +26,7 @@ namespace CGCore {
 		m_InternalFormat = internalFormat;
 		m_DataFormat = dataFormat;
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_RenderID);
+		glBindTexture(GL_TEXTURE_2D, m_RenderID);
 		glTextureStorage2D(m_RenderID, 1, internalFormat, m_Width, m_Height);
 
 		glTextureParameteri(m_RenderID, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -44,8 +45,8 @@ namespace CGCore {
 		m_DataFormat = GL_RGBA;
 
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_RenderID);
+		glBindTexture(GL_TEXTURE_2D, m_RenderID);
 		glTextureStorage2D(m_RenderID, 1, m_InternalFormat, m_Width, m_Height);
-
 		glTextureParameteri(m_RenderID, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTextureParameteri(m_RenderID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTextureParameteri(m_RenderID, GL_TEXTURE_WRAP_S, GL_REPEAT);

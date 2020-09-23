@@ -2,6 +2,7 @@
 #include"base/Base.h"
 #include"graphics/api/RenderAPI.h"
 #include"glm/glm.hpp"
+#include"glm/gtc/type_ptr.hpp"
 namespace CGCore {
 	class RenderCommand
 	{

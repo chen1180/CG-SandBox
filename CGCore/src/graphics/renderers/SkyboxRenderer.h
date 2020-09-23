@@ -1,5 +1,6 @@
 #pragma once
 #include "Renderer3D.h"
+#include"graphics/api/Texture.h"
 namespace CGCore {
 	struct SkyboxRendererData;
 	class SkyboxRenderer
@@ -9,6 +10,7 @@ namespace CGCore {
 		static void ShutDown() ;
 		static void BeginScene(Camera* camera) ;
 		static void EndScene() ;
+		static Ref<TextureCube> GetCubeMap();
 	private:
 		static SkyboxRendererData* s_SkyboxData;
 	};

@@ -22,14 +22,14 @@ namespace CGCore {
 	void ShadowRenderer::ShutDown()
 	{
 	}
-	void ShadowRenderer::BeginScene(const Ref<Light>& light)
+	void ShadowRenderer::BeginScene(const Light& light)
 	{
 		s_ShadowData->DepthShader->Bind();
 		s_ShadowData->DepthFrameBuffer->Bind();
 		glClear(GL_DEPTH_BUFFER_BIT);
 		GLfloat near_plane = 0.1f, far_plane = 100.0f;
 		glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
-		glm::mat4 lightView = glm::lookAt(light->Position, glm::vec3(0.0f), glm::vec3(1.0));
+		glm::mat4 lightView = glm::lookAt(glm::vec3(light.Position), glm::vec3(0.0f), glm::vec3(1.0));
 		s_ShadowData->DepthShader->UploadUniformMat4("uLightView", lightView);
 		s_ShadowData->DepthShader->UploadUniformMat4("uLightProjection", lightProjection);
 	}

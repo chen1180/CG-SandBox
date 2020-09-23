@@ -17,7 +17,6 @@ namespace CGCore {
 		Ref<Texture2D> m_TextureCheckerBoard,m_TexturePig;
 		bool m_ShowImguiDemo = false;
 		PhongRenderer m_PhongRenderer;
-		Ref<Light> m_Light;
 		Ref<Scene> m_Scene;
 		float framerate = 0.0f;
     }; 

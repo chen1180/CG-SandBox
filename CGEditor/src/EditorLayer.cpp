@@ -19,15 +19,26 @@ namespace CGCore {
 		m_Camera->SetCameraControllerType(ControllerType::Camera2D); 
 		*/
 		
+		m_PhongRenderer = PhongRenderer();
+		m_PhongRenderer.Init();
+
 		m_Scene = CreateRef<Scene>();
 
 		auto cube = ModelLoader::LoadModel("assets/mesh/cube.obj", m_Scene.get());
 		auto& transform1 = cube.GetComponent<TransformComponent>();
-		transform1.SetWorldMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(-5.0, 2.0, 0.0)));
+		transform1.SetWorldMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(-5.0, 2.0, 0.0))*glm::rotate(glm::mat4(1.0f),glm::radians(45.0f),glm::vec3(1.0,0.0,0.0)));
+
+		for (int i = 0;i < 10;i++) {
+			for (int j = 0;j < 10;j++) {
+				auto transform = TransformComponent();
+				transform.SetWorldMatrix(glm::translate(glm::mat4(1.0f), glm::vec3( i*2.5, 0.0, j * 3.5f)) * glm::rotate(glm::mat4(1.0f), glm::radians(45.0f), glm::vec3(1.0, 0.0, 0.0)));
+				m_PhongRenderer.SubmitMesh(cube.GetComponent<MeshComponent>().Meshes, transform.GetWorldMatrix());
+			}
+		}
 
 		auto sphere= ModelLoader::LoadModel("assets/mesh/sphere.obj", m_Scene.get());
 		auto& transform2 = sphere.GetComponent<TransformComponent>();
-		transform2.SetWorldMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(5.0, 0.0, 0.0)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.1f,0.1f,0.1f)));
+		transform2.SetWorldMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(5.0, 5.0, 0.0)));
 
 	//	auto skull= ModelLoader::LoadModel("assets/mesh/12140_Skull_v3_L2.obj", m_Scene.get());
 		//transform = sphere.GetComponent<TransformComponent>();
@@ -37,10 +48,11 @@ namespace CGCore {
 		m_TextureCheckerBoard = Texture2D::Create("assets/texture/Checkerboard.png");
 		m_TexturePig= Texture2D::Create("assets/texture/Texture.jpg");
 	
-		m_PhongRenderer = PhongRenderer();
-		m_Light = CreateRef<Light>(Light(glm::vec3(1.0f) ,glm::vec3(3.0,1.0,-3.0 )));
-		m_PhongRenderer.Init();
-		m_PhongRenderer.SubmitLight(m_Light);
+		auto light1=m_Scene->CreateEntity("Light1");
+		light1.AddComponent<Light>(glm::vec4(-2.0f, -2.0, 0.0, 1.0), glm::vec3(3.0, 1.0, -3.0), glm::vec4(1.0, 0.0, 0.0, 1.0));
+
+		auto light2 = m_Scene->CreateEntity("Light2");
+		light2.AddComponent<Light>(glm::vec4(1.0, 2.0, 0.0, 1.0), glm::vec3(3.0, 1.0, -3.0), glm::vec4(0.0, 1.0, 0.0, 1.0));
 		
 		//TODO: move the following function to renderer
 		auto& registry=m_Scene->GetRegistry();
@@ -50,13 +62,14 @@ namespace CGCore {
 			// a component at a time ...
 			auto& meshcomponent = view.get<MeshComponent>(entity);
 			auto& transformComponent = view.get<TransformComponent>(entity);
-			auto posiiton = transformComponent.GetWorldPosition();
-			auto scale = transformComponent.GetWorldScale();
-			m_PhongRenderer.SubmitMesh(meshcomponent.Meshes, posiiton, scale);
+			m_PhongRenderer.SubmitMesh(meshcomponent.Meshes, transformComponent.GetWorldMatrix());
 		}
 		
-		SkyboxRenderer::Init();
-
+		auto lightView = registry.view<Light>();
+		for (auto entity : lightView) {
+			auto& light = lightView.get<Light>(entity);
+			m_PhongRenderer.SubmitLight(light);
+		}
 	}
 	void EditorLayer::OnDettach()
 	{
@@ -72,11 +85,6 @@ namespace CGCore {
 			m_PhongRenderer.EndScene();
 		}
 
-		{
-			//skybox
-			SkyboxRenderer::BeginScene(m_Camera.get());
-			SkyboxRenderer::EndScene();
-		}
 		m_PhongRenderer.GetFrameBuffer()->Unbind();
 
 	}
@@ -172,8 +180,6 @@ namespace CGCore {
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::Separator();
 		m_Camera->OnImGui();
-		ImGui::Separator();
-		ImGui::DragFloat3("Light position", &m_Light->Position[0]);
 		ImGui::End();
 		Renderer2D::OnImguiRender();
 

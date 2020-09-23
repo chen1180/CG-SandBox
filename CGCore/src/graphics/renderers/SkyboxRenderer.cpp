@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "SkyboxRenderer.h"
-#include"graphics/api/Texture.h"
+
 namespace CGCore {
 	struct SkyboxRendererData {
 		Ref<Shader> SkyboxShader=nullptr;
@@ -83,9 +83,14 @@ namespace CGCore {
 	}
 	void SkyboxRenderer::EndScene()
 	{
+		s_SkyboxData->SkyboxShader->Bind();
 		s_SkyboxData->CubeMap->Bind();
 		s_SkyboxData->SkyboxVAO->Bind();
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 		glDepthFunc(GL_LESS);
+	}
+	Ref<TextureCube> SkyboxRenderer::GetCubeMap()
+	{
+		 return s_SkyboxData->CubeMap; 
 	}
 }

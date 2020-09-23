@@ -1,6 +1,7 @@
 #include "Sandbox.h"
 #include"glad/glad.h"
 #include"glm/glm.hpp"
+#include"glm/matrix.hpp"
 #include"glm/gtc/matrix_transform.hpp"
 #include"platform/opengl/OpenGLFrameBuffer.h"
 namespace CGCore {
@@ -23,11 +24,11 @@ namespace CGCore {
 
 		auto cube = ModelLoader::LoadModel("assets/mesh/cube.obj", m_Scene.get());
 		auto& transform1 = cube.GetComponent<TransformComponent>();
-		transform1.SetWorldMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(-5.0, 2.0, 0.0)));
+		transform1.SetWorldMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(-5.0, 2.0, 0.0))*glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0, 1.0, 1.0)));
 
 		auto sphere= ModelLoader::LoadModel("assets/mesh/sphere.obj", m_Scene.get());
 		auto& transform2 = sphere.GetComponent<TransformComponent>();
-		transform2.SetWorldMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(5.0, 0.0, 0.0)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.1f,0.1f,0.1f)));
+		transform2.SetWorldMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(5.0, 0.0, 0.0)));
 
 	//	auto skull= ModelLoader::LoadModel("assets/mesh/12140_Skull_v3_L2.obj", m_Scene.get());
 		//transform = sphere.GetComponent<TransformComponent>();
@@ -50,9 +51,7 @@ namespace CGCore {
 			// a component at a time ...
 			auto& meshcomponent = view.get<MeshComponent>(entity);
 			auto& transformComponent = view.get<TransformComponent>(entity);
-			auto posiiton = transformComponent.GetWorldPosition();
-			auto scale = transformComponent.GetWorldScale();
-			m_PhongRenderer.SubmitMesh(meshcomponent.Meshes, posiiton, scale);
+			m_PhongRenderer.SubmitMesh(meshcomponent.Meshes, transformComponent.GetWorldMatrix());
 		}
 		
 		SkyboxRenderer::Init();

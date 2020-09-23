@@ -11,6 +11,7 @@ namespace CGCore {
 		virtual bool Compile() = 0;
 		virtual void Bind() = 0;
 		virtual void Unbind() = 0;
+		virtual uint32_t GetHandle() = 0;
 		
 		static Ref<Shader>  Create(const char* vertexSource, const char* fragmentSource);
 		static Ref<Shader>  Create(const std::string& vertexSourceFile, const  std::string& fragmentSourceFile);

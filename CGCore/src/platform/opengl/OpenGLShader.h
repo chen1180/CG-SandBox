@@ -10,6 +10,7 @@ namespace CGCore {
 		virtual bool Compile() override;
 		virtual void Bind() override;
 		virtual void Unbind() override;
+		virtual uint32_t GetHandle() override ;
 	public:
 		// Inherited via Shader
 		virtual void UploadUniformFloat(const std::string& name, const float& value) override;
