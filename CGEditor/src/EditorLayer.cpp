@@ -23,16 +23,20 @@ namespace CGCore {
 		m_PhongRenderer.Init();
 
 		m_Scene = CreateRef<Scene>();
-
+		auto cameraEntity=m_Scene->CreateEntity("Camera");
+		cameraEntity.AddComponent<CameraComponent>(m_Camera,true);
+		
 		auto cube = ModelLoader::LoadModel("assets/mesh/cube.obj", m_Scene.get());
 		auto& transform1 = cube.GetComponent<TransformComponent>();
 		transform1.SetWorldMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(-5.0, 2.0, 0.0))*glm::rotate(glm::mat4(1.0f),glm::radians(45.0f),glm::vec3(1.0,0.0,0.0)));
 
 		for (int i = 0;i < 10;i++) {
 			for (int j = 0;j < 10;j++) {
+				auto meshEntity = m_Scene->CreateEntity();
 				auto transform = TransformComponent();
 				transform.SetWorldMatrix(glm::translate(glm::mat4(1.0f), glm::vec3( i*2.5, 0.0, j * 3.5f)) * glm::rotate(glm::mat4(1.0f), glm::radians(45.0f), glm::vec3(1.0, 0.0, 0.0)));
-				m_PhongRenderer.SubmitMesh(cube.GetComponent<MeshComponent>().Meshes, transform.GetWorldMatrix());
+				meshEntity.AddComponent<TransformComponent>(transform);
+				meshEntity.AddComponent<MeshComponent>(cube.GetComponent<MeshComponent>());
 			}
 		}
 
@@ -54,22 +58,6 @@ namespace CGCore {
 		auto light2 = m_Scene->CreateEntity("Light2");
 		light2.AddComponent<Light>(glm::vec4(1.0, 2.0, 0.0, 1.0), glm::vec3(3.0, 1.0, -3.0), glm::vec4(0.0, 1.0, 0.0, 1.0));
 		
-		//TODO: move the following function to renderer
-		auto& registry=m_Scene->GetRegistry();
-		auto view = registry.view<MeshComponent,TransformComponent>();
-
-		for (auto entity : view) {
-			// a component at a time ...
-			auto& meshcomponent = view.get<MeshComponent>(entity);
-			auto& transformComponent = view.get<TransformComponent>(entity);
-			m_PhongRenderer.SubmitMesh(meshcomponent.Meshes, transformComponent.GetWorldMatrix());
-		}
-		
-		auto lightView = registry.view<Light>();
-		for (auto entity : lightView) {
-			auto& light = lightView.get<Light>(entity);
-			m_PhongRenderer.SubmitLight(light);
-		}
 	}
 	void EditorLayer::OnDettach()
 	{
@@ -81,7 +69,7 @@ namespace CGCore {
 		RenderCommand::ClearColor();
 
 		{
-			m_PhongRenderer.BeginScene(m_Camera.get());
+			m_PhongRenderer.BeginScene(m_Scene.get());
 			m_PhongRenderer.EndScene();
 		}
 
@@ -167,6 +155,9 @@ namespace CGCore {
 		ImGui::End();
 
 		ImGui::Begin("New session");
+		ImGui::Separator();
+		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		ImGui::Separator();
 		ImGui::Checkbox("Imgui Demo", &m_ShowImguiDemo);
 		ImVec2 viewportSize = ImGui::GetContentRegionAvail();
 		ImGui::Text("Framebuffer-depth:");
@@ -176,9 +167,6 @@ namespace CGCore {
 
 		if (m_ShowImguiDemo)
 			ImGui::ShowDemoWindow(&m_ShowImguiDemo);
-		ImGui::Separator();
-		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-		ImGui::Separator();
 		m_Camera->OnImGui();
 		ImGui::End();
 		Renderer2D::OnImguiRender();

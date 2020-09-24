@@ -15,7 +15,11 @@ out VS_OUT
 	
 } vs_out;
 
-uniform mat4 uView,uProjection,uModel;
+layout(std140, binding = 0) uniform uTransformMatrix {
+     mat4 uView,uProjection;
+};
+
+uniform mat4 uModel;
 uniform mat4 uLightProjection;
 uniform mat4 uLightView;
 

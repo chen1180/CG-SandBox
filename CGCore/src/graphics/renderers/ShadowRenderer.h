@@ -14,6 +14,7 @@ namespace CGCore {
 		static void EndScene() ;
 		static const Ref<Texture>& GetShadowMap();
 		static const Ref<Shader>& GetShader();
+
 	private:
 		static ShadowRendererData* s_ShadowData;
 	};

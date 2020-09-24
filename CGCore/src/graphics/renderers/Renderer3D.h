@@ -6,6 +6,7 @@
 #include"graphics/modelLoader/Mesh.h"
 #include"graphics/camera/Camera.h"
 #include"graphics/Light.h"
+#include"ECS/Scene.h"
 namespace CGCore {
 	class Renderer3D
 	{
@@ -13,6 +14,8 @@ namespace CGCore {
 		virtual ~Renderer3D() {};
 		virtual void Init() {};
 		virtual void ShutDown() {};
+		virtual void BeginScene(Scene* scene) {};
+		//TODO:remove later
 		virtual void BeginScene(Camera* camera) {};
 		virtual void EndScene() {};
 		virtual void SetSystemUniformBuffer() {};

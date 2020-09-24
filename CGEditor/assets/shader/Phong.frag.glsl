@@ -16,7 +16,7 @@ struct Light {
 };
 
 #define MAXLIGHTS 32
-layout(std140, binding = 0) uniform uLights {
+layout(std140, binding = 1) uniform uLights {
     Light lights [ MAXLIGHTS ];
     int lightNum;
 };

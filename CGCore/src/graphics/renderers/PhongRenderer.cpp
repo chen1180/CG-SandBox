@@ -2,8 +2,8 @@
 #include "PhongRenderer.h"
 #include"ShadowRenderer.h"
 #include"SkyboxRenderer.h"
+#include"ECS/Component.h"
 #include"graphics/api/RenderCommand.h"
-
 #include"GLFW/glfw3.h"
 #include"imgui.h"
 namespace CGCore {
@@ -23,7 +23,7 @@ namespace CGCore {
 		std::vector<Light> LightSources;
 		Ref<Shader> PhongShader;
 		Ref<FrameBuffer> FrameBuffer;
-		Ref<UniformBuffer> LightUniformBuffer;
+		Ref<UniformBuffer> LightUniformBuffer,TransformUniformBuffer;
 
 		//Statistics
 		PhongRenderer::Statistics Stats;
@@ -40,8 +40,11 @@ namespace CGCore {
 		s_PhongRenderData->CommandBuffer.reserve(100);
 		s_PhongRenderData->LightSources.reserve(32);
 
-		uint32_t buffersize = s_PhongRenderData->MaxNumLight *sizeof(Light)+sizeof(s_PhongRenderData->MaxNumLight);
-		s_PhongRenderData->LightUniformBuffer = UniformBuffer::Create(nullptr, buffersize);
+		uint32_t lightBuffersize = s_PhongRenderData->MaxNumLight *sizeof(Light)+sizeof(s_PhongRenderData->MaxNumLight);
+		s_PhongRenderData->LightUniformBuffer = UniformBuffer::Create(nullptr, lightBuffersize);
+		uint32_t transformBufferSize = sizeof(glm::mat4) * 2;
+		s_PhongRenderData->TransformUniformBuffer = UniformBuffer::Create(nullptr, transformBufferSize);
+
 		//TODO: test Shadow renderer, remove in later stage
 		ShadowRenderer::Init();
 		SkyboxRenderer::Init();
@@ -57,18 +60,82 @@ namespace CGCore {
 	{
 		//Init statistics:
 		Reset3DStats();
-
 		s_PhongRenderData->PhongShader->Bind();
-		s_PhongRenderData->PhongShader->UploadUniformMat4("uView", camera->GetViewMatrix());
-		s_PhongRenderData->PhongShader->UploadUniformMat4("uProjection", camera->GetProjectionMatrix());
+		//Update Transform Uniform
+		s_PhongRenderData->TransformUniformBuffer->UpdateSubData(&camera->GetViewMatrix(),sizeof(glm::mat4),0);
+		s_PhongRenderData->TransformUniformBuffer->UpdateSubData(&camera->GetProjectionMatrix(), sizeof(glm::mat4), sizeof(glm::mat4));
 		s_PhongRenderData->PhongShader->UploadUniformFloat3("viewPos", camera->GetPosition());
+		//Light Uniform buffer
+		int numLight = s_PhongRenderData->LightSources.size();
+		s_PhongRenderData->LightUniformBuffer->UpdateSubData(s_PhongRenderData->LightSources.data(), s_PhongRenderData->LightSources.size() * sizeof(Light), 0);
+		s_PhongRenderData->LightUniformBuffer->UpdateSubData(&numLight, sizeof(numLight), s_PhongRenderData->MaxNumLight * sizeof(Light));
+		//Bind uniform buffer
+		s_PhongRenderData->TransformUniformBuffer->Bind(0, s_PhongRenderData->PhongShader.get(), "uTransformMatrix");
+		s_PhongRenderData->LightUniformBuffer->Bind(1, s_PhongRenderData->PhongShader.get(), "uLights");
 
 		//skybox
+
 		SkyboxRenderer::BeginScene(camera);
+		s_PhongRenderData->TransformUniformBuffer->Bind(0, SkyboxRenderer::GetShader().get() , "uTransformMatrix");
+
 
 		
 	
 	}
+
+	void PhongRenderer::BeginScene(Scene* scene)
+	{
+
+		//Init statistics:
+		Reset3DStats();
+		s_PhongRenderData->CommandBuffer.clear();
+		s_PhongRenderData->LightSources.clear();
+
+		auto& registry = scene->GetRegistry();
+		auto view = registry.view<CameraComponent>();
+		Camera* mainCamera = nullptr;
+		for (auto entity : view) {
+			// a component at a time ...
+			auto cam = view.get<CameraComponent>(entity);
+			if (cam.IsMainCamera) {
+				mainCamera = cam.Cam.get();
+				break;
+			}
+		}
+		auto meshview = registry.view<MeshComponent, TransformComponent>();
+		for (auto entity : meshview) {
+			// a component at a time ...
+			auto& meshcomponent = meshview.get<MeshComponent>(entity);
+			auto& transformComponent = meshview.get<TransformComponent>(entity);
+			SubmitMesh(meshcomponent.Meshes, transformComponent.GetWorldMatrix());
+		}
+		
+		auto lightView = registry.view<Light>();
+		for (auto entity : lightView) {
+			auto& light = lightView.get<Light>(entity);
+			SubmitLight(light);
+		}
+
+		//Update Transform Uniform
+		s_PhongRenderData->TransformUniformBuffer->UpdateSubData(&mainCamera->GetViewMatrix(), sizeof(glm::mat4), 0);
+		s_PhongRenderData->TransformUniformBuffer->UpdateSubData(&mainCamera->GetProjectionMatrix(), sizeof(glm::mat4), sizeof(glm::mat4));
+		s_PhongRenderData->PhongShader->UploadUniformFloat3("viewPos", mainCamera->GetPosition());
+		//Light Uniform buffer
+		int numLight = s_PhongRenderData->LightSources.size();
+		s_PhongRenderData->LightUniformBuffer->UpdateSubData(s_PhongRenderData->LightSources.data(), s_PhongRenderData->LightSources.size() * sizeof(Light), 0);
+		s_PhongRenderData->LightUniformBuffer->UpdateSubData(&numLight, sizeof(numLight), s_PhongRenderData->MaxNumLight * sizeof(Light));
+		//Bind uniform buffer
+		s_PhongRenderData->TransformUniformBuffer->Bind(0, s_PhongRenderData->PhongShader.get(), "uTransformMatrix");
+		s_PhongRenderData->LightUniformBuffer->Bind(1, s_PhongRenderData->PhongShader.get(), "uLights");
+		//skybox
+		SkyboxRenderer::BeginScene(mainCamera);
+		s_PhongRenderData->TransformUniformBuffer->Bind(0, SkyboxRenderer::GetShader().get(), "uTransformMatrix");
+
+		
+	
+
+	}
+
 
 	void PhongRenderer::SubmitMesh(Ref<Mesh> mesh, const glm::mat4& transform)
 	{
@@ -119,13 +186,6 @@ namespace CGCore {
 		SkyboxRenderer::EndScene();
 		//TODO: optisize in the future. Bind shadow map
 		s_PhongRenderData->PhongShader->Bind();
-
-		//Light Uniform buffer
-		int numLight = s_PhongRenderData->LightSources.size();
-		s_PhongRenderData->LightUniformBuffer->UpdateSubData(s_PhongRenderData->LightSources.data(), s_PhongRenderData->LightSources.size()*sizeof(Light),0);
-		s_PhongRenderData->LightUniformBuffer->UpdateSubData(&numLight, sizeof(numLight), s_PhongRenderData->MaxNumLight* sizeof(Light));
-		s_PhongRenderData->LightUniformBuffer->Bind(0, s_PhongRenderData->PhongShader.get(), "uLights");
-	
 		ShadowRenderer::GetShadowMap()->Bind(0);
 		SkyboxRenderer::GetCubeMap()->Bind(1);
 		for (auto& command : s_PhongRenderData->CommandBuffer) {

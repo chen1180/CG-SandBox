@@ -11,6 +11,7 @@ namespace CGCore {
 		static void BeginScene(Camera* camera) ;
 		static void EndScene() ;
 		static Ref<TextureCube> GetCubeMap();
+		static const Ref<Shader>& GetShader();
 	private:
 		static SkyboxRendererData* s_SkyboxData;
 	};

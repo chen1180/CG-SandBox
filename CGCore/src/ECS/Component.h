@@ -5,6 +5,7 @@
 #include <glm/gtx/matrix_decompose.hpp>
 #include"pch.h"
 #include"graphics/modelLoader/Mesh.h"
+#include"graphics/camera/Camera.h"
 namespace CGCore {
 	struct TagComponent {
 		std::string Tag{ "" };
@@ -20,6 +21,15 @@ namespace CGCore {
 		MeshComponent(const MeshComponent&) = default;
 		MeshComponent(const Ref<Mesh>& mesh)
 			: Meshes(mesh) {}
+
+	};
+	struct CameraComponent {
+		Ref<Camera> Cam;
+		bool IsMainCamera;
+		CameraComponent() = default;
+		CameraComponent(const CameraComponent&) = default;
+		CameraComponent(const Ref<Camera>& cam,bool isMainCamera=false)
+			: Cam(cam),IsMainCamera(IsMainCamera) {}
 
 	};
 	class TransformComponent {

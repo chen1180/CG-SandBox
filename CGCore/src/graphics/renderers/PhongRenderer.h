@@ -12,6 +12,7 @@ namespace CGCore {
 		virtual void Init() override;
 		virtual void ShutDown()override;
 		virtual void BeginScene(Camera* camera)override;
+		virtual void BeginScene(Scene* scene) override;
 		virtual void EndScene()override;
 
 		void SubmitMesh(Ref<Mesh>, const glm::mat4& transform);

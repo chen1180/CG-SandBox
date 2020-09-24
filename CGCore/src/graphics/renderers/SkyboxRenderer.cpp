@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "SkyboxRenderer.h"
-
+#include"graphics/api/Texture.h"
 namespace CGCore {
 	struct SkyboxRendererData {
 		Ref<Shader> SkyboxShader=nullptr;
@@ -92,5 +92,9 @@ namespace CGCore {
 	Ref<TextureCube> SkyboxRenderer::GetCubeMap()
 	{
 		 return s_SkyboxData->CubeMap; 
+	}
+	const Ref<Shader>& SkyboxRenderer::GetShader()
+	{
+		return s_SkyboxData->SkyboxShader;
 	}
 }
