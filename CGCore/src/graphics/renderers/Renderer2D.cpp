@@ -71,7 +71,7 @@ namespace CGCore {
 		s_RenderData->QuadVertexArray->SetIndexBuffer(m_IndexBuffer);
 		delete[] quadIndices;
 
-		s_RenderData->TextureShader = Shader::Create(std::string("assets/shader/Texture.vert.glsl"), std::string("assets/shader/Texture.frag.glsl"));
+		s_RenderData->TextureShader = Shader::Create(std::string("../assets/shader/Texture.vert.glsl"), std::string("../assets/shader/Texture.frag.glsl"));
 		s_RenderData->TextureShader->Bind();
 		//Texture
 		int samplers[s_RenderData->MaxTextureSlot];

@@ -15,9 +15,9 @@ namespace CGCore {
 	void SkyboxRenderer::Init()
 	{
 		s_SkyboxData = new SkyboxRendererData();
-		s_SkyboxData->SkyboxShader = Shader::Create(std::string("assets/shader/Debug_skybox.vert.glsl"), std::string("assets/shader/Debug_skybox.frag.glsl"));
-		//cubemap assets
-		s_SkyboxData->CubeMap = TextureCube::Create("assets/texture/cubemap/skybox");
+		s_SkyboxData->SkyboxShader = Shader::Create(std::string("../assets/shader/Debug_skybox.vert.glsl"), std::string("../assets/shader/Debug_skybox.frag.glsl"));
+		//cubemap ../assets
+		s_SkyboxData->CubeMap = TextureCube::Create("../assets/texture/cubemap/skybox");
 		float skyboxVertices[] = {
 			// positions          
 			-1.0f,  1.0f, -1.0f,
@@ -77,9 +77,9 @@ namespace CGCore {
 	{
 		glDepthFunc(GL_LEQUAL);
 		s_SkyboxData->SkyboxShader->Bind();
-		auto view = glm::mat4(glm::mat3(camera->GetViewMatrix())); // remove translation from the view matrix
-		s_SkyboxData->SkyboxShader->UploadUniformMat4("view", view);
-		s_SkyboxData->SkyboxShader->UploadUniformMat4("projection", camera->GetProjectionMatrix());
+		//auto view = glm::mat4(glm::mat3(camera->GetViewMatrix())); // remove translation from the view matrix
+		//s_SkyboxData->SkyboxShader->UploadUniformMat4("view", view);
+		//s_SkyboxData->SkyboxShader->UploadUniformMat4("projection", camera->GetProjectionMatrix());
 	}
 	void SkyboxRenderer::EndScene()
 	{

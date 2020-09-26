@@ -1,5 +1,6 @@
 #pragma once
 #include"CGCore.h"
+#include "panel/SceneHierarchyPanel.h"
 namespace CGCore {
 
     class EditorLayer :public Layer
@@ -18,7 +19,9 @@ namespace CGCore {
 		bool m_ShowImguiDemo = false;
 		PhongRenderer m_PhongRenderer;
 		Ref<Scene> m_Scene;
+		Scope<SceneHierarchyPanel> m_ScenePanel;
 		float framerate = 0.0f;
+		Entity m_Light;
     }; 
 
 }

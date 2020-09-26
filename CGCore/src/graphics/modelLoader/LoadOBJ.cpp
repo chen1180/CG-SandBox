@@ -26,10 +26,12 @@ namespace CGCore {
 		{
 			CG_CORE_ERROR(error);
 		}
-		
-		auto entity = scene->CreateEntity();
-		bool singleMesh = shapes.size() == 1;
 
+		std::string name = filepath.filename().string();
+		auto entity = scene->CreateEntity(name);
+		bool singleMesh = shapes.size() == 1;
+	
+		
 		for (const auto& shape : shapes)
 		{
 			uint32_t vertexCount = 0;

@@ -11,13 +11,15 @@ out VS_OUT
 	vec3 normal,tangent;
 	vec4 color;
 	vec3 fragPos;
-	vec4 fragPosLightSpace; 
+	//vec4 fragPosLightSpace; 
 	
 } vs_out;
 
 layout(std140, binding = 0) uniform uTransformMatrix {
      mat4 uView,uProjection;
 };
+
+
 
 uniform mat4 uModel;
 uniform mat4 uLightProjection;
@@ -30,7 +32,7 @@ void main()
 	vs_out.tangent=aTangent;
 	vs_out.color=aColor;
 	vs_out.fragPos=vec3(uModel * vec4(aPos, 1.0f));
-	vs_out.fragPosLightSpace=uLightProjection* uLightView* vec4(vs_out.fragPos, 1.0);
+	//vs_out.fragPosLightSpace=uLightViewProj[UShadowMapIndex]* vec4(vs_out.fragPos, 1.0);
     vs_out.normal = mat3(transpose(inverse(uModel))) * aNormal;  
 
 }

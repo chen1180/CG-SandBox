@@ -54,35 +54,29 @@ namespace CGCore {
 	}
 	void Camera::OnImGui()
 	{
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
+		ImGui::Columns(2);
+		ImGui::Separator();
 
-		if (ImGui::TreeNode("Camera"))
-		{
-			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
-			ImGui::Columns(2);
-			ImGui::Separator();
+		ImGuiHelpers::Property("Position", m_Position, -1000.0f, 1000.0f);
+		ImGuiHelpers::Property("Aspect", m_AspectRatio, 0.0f, 10.0f);
+		ImGuiHelpers::Property("Pitch", m_Pitch, -360.0f, 360.0f);
+		ImGuiHelpers::Property("Yaw", m_Yaw, -360.0f, 360.0f);
+		ImGuiHelpers::Property("Roll", m_Roll, -360.0f, 360.0f);
+		ImGuiHelpers::Property("Fov", m_Fov, 1.0f, 120.0f);
+		ImGuiHelpers::Property("Near", m_Near, 0.0f, 10.0f);
+		ImGuiHelpers::Property("Far", m_Far, 10.0f, 10000.0f);
+		ImGuiHelpers::Property("Zoom", m_Zoom, 0.0f, 100.0f);
+		ImGuiHelpers::Property("Offset", m_ProjectionOffset, 0.0f, 10.0f);
+		ImGuiHelpers::Property("Scale", m_Scale, 0.0f, 1000.0f);
+		ImGui::Checkbox("Orthograhic", &m_Orthographic);
 
-			ImGuiHelpers::Property("Position", m_Position, -1000.0f, 1000.0f);
-			ImGuiHelpers::Property("Aspect", m_AspectRatio, 0.0f, 10.0f);
-			ImGuiHelpers::Property("Pitch", m_Pitch, -360.0f, 360.0f);
-			ImGuiHelpers::Property("Yaw", m_Yaw, -360.0f, 360.0f);
-			ImGuiHelpers::Property("Roll", m_Roll, -360.0f, 360.0f);
-			ImGuiHelpers::Property("Fov", m_Fov, 1.0f, 120.0f);
-			ImGuiHelpers::Property("Near", m_Near, 0.0f, 10.0f);
-			ImGuiHelpers::Property("Far", m_Far, 10.0f, 10000.0f);
-			ImGuiHelpers::Property("Zoom", m_Zoom, 0.0f, 100.0f);
-			ImGuiHelpers::Property("Offset", m_ProjectionOffset, 0.0f, 10.0f);
-			ImGuiHelpers::Property("Scale", m_Scale, 0.0f, 1000.0f);
-			ImGui::Checkbox("Orthograhic", &m_Orthographic);
+		m_ProjectionDirty = true;
+		m_ViewDirty = true;
 
-			m_ProjectionDirty = true;
-			m_ViewDirty = true;
-
-			ImGui::Columns(1);
-			ImGui::Separator();
-			ImGui::PopStyleVar();
-
-			ImGui::TreePop();
-		}
+		ImGui::Columns(1);
+		ImGui::Separator();
+		ImGui::PopStyleVar();
 	}
 	const glm::vec3& Camera::GetPosition()
 	{

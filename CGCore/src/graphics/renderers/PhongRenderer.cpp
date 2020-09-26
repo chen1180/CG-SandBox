@@ -2,7 +2,6 @@
 #include "PhongRenderer.h"
 #include"ShadowRenderer.h"
 #include"SkyboxRenderer.h"
-#include"ECS/Component.h"
 #include"graphics/api/RenderCommand.h"
 #include"GLFW/glfw3.h"
 #include"imgui.h"
@@ -36,7 +35,7 @@ namespace CGCore {
 	void PhongRenderer::Init()
 	{
 		s_PhongRenderData = new PhongRendererData();
-		s_PhongRenderData->PhongShader= Shader::Create(std::string("assets/shader/Phong.vert.glsl"), std::string("assets/shader/Phong.frag.glsl"));
+		s_PhongRenderData->PhongShader= Shader::Create(std::string("../assets/shader/Phong.vert.glsl"), std::string("../assets/shader/Phong.frag.glsl"));
 		s_PhongRenderData->CommandBuffer.reserve(100);
 		s_PhongRenderData->LightSources.reserve(32);
 
@@ -102,24 +101,40 @@ namespace CGCore {
 				break;
 			}
 		}
+
+		if (mainCamera==nullptr) {
+			return;
+		}
+		
 		auto meshview = registry.view<MeshComponent, TransformComponent>();
 		for (auto entity : meshview) {
 			// a component at a time ...
 			auto& meshcomponent = meshview.get<MeshComponent>(entity);
 			auto& transformComponent = meshview.get<TransformComponent>(entity);
-			SubmitMesh(meshcomponent.Meshes, transformComponent.GetWorldMatrix());
+			SubmitMesh(meshcomponent.Meshes, transformComponent.GetWorldMatrix()*transformComponent.GetLocalMatrix());
 		}
 		
 		auto lightView = registry.view<Light>();
 		for (auto entity : lightView) {
 			auto& light = lightView.get<Light>(entity);
 			SubmitLight(light);
+			//TODO: Seperate shadow renderer submit light to a seperate pass
+			ShadowRenderer::SubmitLight(light);
 		}
-
+		//shadow renderer
+		ShadowRenderer::BeginScene(scene);
+		
 		//Update Transform Uniform
+		s_PhongRenderData->PhongShader->Bind();
+		s_PhongRenderData->PhongShader->UploadUniformFloat3("viewPos", mainCamera->GetPosition());
+		int samplers[16];
+		for (int i = 0;i < 16;i++)
+			samplers[i] = i;
+		s_PhongRenderData->PhongShader->UploadUniformIntArray("shadowMap", samplers, 16);
+		
 		s_PhongRenderData->TransformUniformBuffer->UpdateSubData(&mainCamera->GetViewMatrix(), sizeof(glm::mat4), 0);
 		s_PhongRenderData->TransformUniformBuffer->UpdateSubData(&mainCamera->GetProjectionMatrix(), sizeof(glm::mat4), sizeof(glm::mat4));
-		s_PhongRenderData->PhongShader->UploadUniformFloat3("viewPos", mainCamera->GetPosition());
+
 		//Light Uniform buffer
 		int numLight = s_PhongRenderData->LightSources.size();
 		s_PhongRenderData->LightUniformBuffer->UpdateSubData(s_PhongRenderData->LightSources.data(), s_PhongRenderData->LightSources.size() * sizeof(Light), 0);
@@ -127,12 +142,11 @@ namespace CGCore {
 		//Bind uniform buffer
 		s_PhongRenderData->TransformUniformBuffer->Bind(0, s_PhongRenderData->PhongShader.get(), "uTransformMatrix");
 		s_PhongRenderData->LightUniformBuffer->Bind(1, s_PhongRenderData->PhongShader.get(), "uLights");
+		ShadowRenderer::GetUniformBuffer()->Bind(2, s_PhongRenderData->PhongShader.get(), "uLightTransformMatrix");
+
 		//skybox
 		SkyboxRenderer::BeginScene(mainCamera);
 		s_PhongRenderData->TransformUniformBuffer->Bind(0, SkyboxRenderer::GetShader().get(), "uTransformMatrix");
-
-		
-	
 
 	}
 
@@ -157,7 +171,7 @@ namespace CGCore {
 	void PhongRenderer::EndScene()
 	{
 		//TODO: remove after shadow test.
-		for (auto& light : s_PhongRenderData->LightSources) {
+		/*for (auto& light : s_PhongRenderData->LightSources) {
 			ShadowRenderer::BeginScene(light);
 			//TODO: for temperory test shadow map
 			for (auto& command : s_PhongRenderData->CommandBuffer) {
@@ -167,34 +181,31 @@ namespace CGCore {
 			}
 			ShadowRenderer::EndScene();
 
-		}
+		}*/
 
-		s_PhongRenderData->PhongShader->Bind(); 
-		for (auto& light : s_PhongRenderData->LightSources) {
-			//TODO: remove after shadowmap test
-			GLfloat near_plane = 0.1f, far_plane = 100.0f;
-			glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
-			glm::mat4 lightView = glm::lookAt(glm::vec3(light.Position), glm::vec3(0.0f), glm::vec3(1.0));
-			s_PhongRenderData->PhongShader->UploadUniformMat4("uLightView", lightView);
-			s_PhongRenderData->PhongShader->UploadUniformMat4("uLightProjection", lightProjection);
-		}
-		
+
+	
 		s_PhongRenderData->FrameBuffer->Bind();
 		RenderCommand::Clear(); 
 		RenderCommand::ClearColor();
-
-		SkyboxRenderer::EndScene();
+		//TODO: clear up the code here later, very messy!
+		auto spec = s_PhongRenderData->FrameBuffer->GetSpecification();
+		RenderCommand::OnWindowResize(spec.Width,spec.Height);
+		
 		//TODO: optisize in the future. Bind shadow map
 		s_PhongRenderData->PhongShader->Bind();
-		ShadowRenderer::GetShadowMap()->Bind(0);
-		SkyboxRenderer::GetCubeMap()->Bind(1);
+
+		for (int i = 0;i < ShadowRenderer::GetShadowMap().size();i++) {
+			ShadowRenderer::GetShadowMap()[i]->GetDepthAttachment()->Bind(i);
+		}
+		SkyboxRenderer::GetCubeMap()->Bind(ShadowRenderer::GetShadowMap().size()+1);
+		
 		for (auto& command : s_PhongRenderData->CommandBuffer) {
 			s_PhongRenderData->PhongShader->UploadUniformMat4("uModel", command.Transform);
 			command.Mesh->Draw(); 
 			s_PhongRenderData->Stats.DrawCalls++;
 		}
-
-		ShadowRenderer::GetShadowMap()->Unbind();
+		SkyboxRenderer::EndScene();
 
 	}
 

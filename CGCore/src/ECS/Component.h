@@ -3,9 +3,14 @@
 #include"glm/gtc/quaternion.hpp"
 #include"glm/gtx/quaternion.hpp"
 #include <glm/gtx/matrix_decompose.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include"pch.h"
+
+#include "imgui.h"
 #include"graphics/modelLoader/Mesh.h"
 #include"graphics/camera/Camera.h"
+#include "graphics/Light.h"
+#include"entt/entt.hpp"
 namespace CGCore {
 	struct TagComponent {
 		std::string Tag{ "" };
@@ -63,7 +68,7 @@ namespace CGCore {
 		const glm::vec3& GetLocalScale() {
 			return m_LocalScale;
 		}
-		const glm::mat4& GetWorldMatrix()
+		glm::mat4& GetWorldMatrix()
 		{
 			if (m_Dirty)
 				UpdateMatrix();
@@ -106,6 +111,64 @@ namespace CGCore {
 			if (m_Dirty)
 				UpdateMatrix();
 			m_WorldMatrix = mat * m_LocalMatrix;
+		}
+
+		void OnImGui()
+		{
+			auto rotation = glm::eulerAngles(m_LocalOrientation) ;
+
+			bool update = false;
+
+			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
+			ImGui::Columns(2);
+			ImGui::Separator();
+
+			ImGui::AlignTextToFramePadding();
+			ImGui::TextUnformatted("Position");
+			ImGui::NextColumn();
+			ImGui::PushItemWidth(-1);
+			if (ImGui::DragFloat3("##Position",glm::value_ptr(m_LocalPosition)),.1f)
+			{
+				update = true;
+			}
+
+			ImGui::PopItemWidth();
+			ImGui::NextColumn();
+
+			ImGui::AlignTextToFramePadding();
+			ImGui::TextUnformatted("Rotation");
+			ImGui::NextColumn();
+			ImGui::PushItemWidth(-1);
+			if (ImGui::DragFloat3("##Rotation", glm::value_ptr(rotation)),0.01f)
+			{
+				float pitch = glm::min(rotation.x, glm::radians(89.9f));
+				pitch = glm::max(pitch, glm::radians(-89.9f));
+				SetLocalOrientation(glm::quat(glm::vec3(pitch, rotation.y, rotation.z)));
+				update = true;
+			}
+
+			ImGui::PopItemWidth();
+			ImGui::NextColumn();
+
+			ImGui::AlignTextToFramePadding();
+			ImGui::TextUnformatted("Scale");
+			ImGui::NextColumn();
+			ImGui::PushItemWidth(-1);
+			if (ImGui::DragFloat3("##Scale", glm::value_ptr(m_LocalScale), 0.1f))
+			{
+				update = true;
+			}
+
+			ImGui::PopItemWidth();
+			ImGui::NextColumn();
+
+			if (update)
+				UpdateMatrix();
+
+			ImGui::Columns(1);
+			ImGui::Separator();
+			ImGui::PopStyleVar();
+			
 		}
 
 

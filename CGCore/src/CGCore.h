@@ -19,6 +19,7 @@
 #include"ECS/Scene.h"
 #include"ECS/Component.h"
 #include"ECS/Entity.h"
+
 //api
 #include"graphics/api/Shader.h"
 #include"graphics/api/Buffer.h"
@@ -30,6 +31,7 @@
 //model
 #include"graphics/modelLoader/Mesh.h"
 #include"graphics/modelLoader/ModelLoader.h"
+#include"graphics/modelLoader/MeshFactory.h"
 //Camera
 #include"graphics/camera/Camera.h"
 #include"graphics/camera/Camera2D.h"
