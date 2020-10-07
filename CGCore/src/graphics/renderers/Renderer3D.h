@@ -6,6 +6,7 @@
 #include"graphics/modelLoader/Mesh.h"
 #include"graphics/camera/Camera.h"
 #include"graphics/Light.h"
+#include"graphics/Material.h"
 #include"ECS/Component.h"
 #include"ECS/Scene.h"
 namespace CGCore {

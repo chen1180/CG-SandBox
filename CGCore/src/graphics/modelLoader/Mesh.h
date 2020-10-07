@@ -55,11 +55,6 @@ namespace CGCore {
 		Ref<IndexBuffer> m_IndexBuffer;
 
 	};
-	//TODO: remove it after introducing entity.
-	//struct Entity {
-		//std::vector<Ref<Mesh>> Meshes;
-		//Entity() = default;
-	//};
 
 }
 namespace std

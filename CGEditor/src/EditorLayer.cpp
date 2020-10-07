@@ -19,6 +19,7 @@ namespace CGCore {
 		m_PhongRenderer.Init();
 
 		m_Scene = CreateRef<Scene>();
+		m_Scene->OnViewportResize(width, height);
 		auto cameraEntity=m_Scene->CreateEntity("Camera");
 		cameraEntity.AddComponent<CameraComponent>(m_Camera,true);
 		
@@ -28,29 +29,32 @@ namespace CGCore {
 
 
 		auto meshEntity = m_Scene->CreateEntity();
-		auto transform = TransformComponent();
+		auto& transform = meshEntity.GetComponent<TransformComponent>();
 		transform.SetWorldMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(0.0, -5.0,0.0))*glm::scale(glm::mat4(1.0f),glm::vec3(5.0f,5.0f,5.0f)));
-		meshEntity.AddComponent<TransformComponent>(transform);
 		meshEntity.AddComponent<MeshComponent>(cube.GetComponent<MeshComponent>());
-		
-		/*for (int i = 0;i < 10;i++) {
-			for (int j = 0;j < 10;j++) {
-				auto meshEntity = m_Scene->CreateEntity();
-				auto transform = TransformComponent();
-				transform.SetWorldMatrix(glm::translate(glm::mat4(1.0f), glm::vec3( i*2.5, 0.0, j * 3.5f)));
-				meshEntity.AddComponent<TransformComponent>(transform);
-				meshEntity.AddComponent<MeshComponent>(cube.GetComponent<MeshComponent>());
-			}
-		}*/
+		meshEntity.AddComponent<Material>();
 
 		auto sphere= ModelLoader::LoadModel("../assets/mesh/sphere.obj", m_Scene.get());
 		auto& transform2 = sphere.GetComponent<TransformComponent>();
 		transform2.SetWorldMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(-2.0, 1.0, -1.0)));
+
+		for (int i = -2;i < 2;i++) {
+			for (int j = -2;j < 2;j++) {
+				auto meshEntity = m_Scene->CreateEntity();
+				float metallic = (i + 2.0) * 0.1f;
+				float roughness = (j + 2.0) * 0.1f;
+				auto material = Material(metallic, roughness);
+				
+				auto& trans = meshEntity.GetComponent<TransformComponent>();
+				trans.SetWorldMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(i * 2.5, 1.0, j * 2.5f)));
+				meshEntity.AddComponent<MeshComponent>(sphere.GetComponent<MeshComponent>());
+				meshEntity.AddComponent<Material>(material);
+			}
+		}
 		
 		auto planeEntt = m_Scene->CreateEntity();
 		Ref<Mesh> plane = MeshFactory::CreateQuad(-0.5,1.5,5.0,5.0);
 		planeEntt.AddComponent<MeshComponent>(plane);
-		planeEntt.AddComponent<TransformComponent>();
 		auto& transform3 = planeEntt.GetComponent<TransformComponent>();
 		//transform3.SetLocalScale(glm::vec3(10.0, 10.0, 1.0));
 		transform3.SetWorldMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(0.0, 0.5, 0.0)) * glm::rotate(glm::mat4(1.0),glm::radians(90.0f),glm::vec3(1.0,0.0,0.0)));
@@ -60,7 +64,7 @@ namespace CGCore {
 		m_TexturePig= Texture2D::Create("../assets/texture/Texture.jpg");
 	
 		m_Light=m_Scene->CreateEntity("Light1");
-		m_Light.AddComponent<Light>(glm::vec4(-2.0f, 7.0f, -1.0f,0.0f), glm::vec4(0.0, 0.0, 0.0,0.0), glm::vec4(0.0, 1.0, 0.0, 1.0));
+		m_Light.AddComponent<Light>(glm::vec4(-2.0f, 7.0f, -1.0f,0.0f), glm::vec4(0.0, -1.0, 0.0,0.0), glm::vec4(0.0, 1.0, 0.0, 1.0),LightType::SpotLight);
 
 		auto light2 = m_Scene->CreateEntity("Light2");
 		light2.AddComponent<Light>(glm::vec4(3.0f, 5.0f, 1.0f, 0.0f), glm::vec4(0.0, 0.0, 0.0, 0.0), glm::vec4(0.0, 0.0, 1.0, 1.0));
@@ -82,6 +86,19 @@ namespace CGCore {
 		{
 			m_PhongRenderer.BeginScene(m_Scene.get());
 			m_PhongRenderer.EndScene();
+
+			//2D
+			Renderer2D::Reset2DStats();
+			Renderer2D::BeginScene(m_Camera.get());
+			auto& registry = m_Scene->GetRegistry();
+			auto groups = registry.view<TransformComponent,SpriteRendererComponent>();
+			for (auto entity : groups) {
+				auto& color = groups.get<SpriteRendererComponent>(entity).Color;
+				auto& transform = groups.get<TransformComponent>(entity);
+				glm::vec2 size = {transform.GetLocalScale().x,transform.GetLocalScale().y};
+				Renderer2D::DrawQuad(transform.GetLocalPosition(), size,color);
+			}
+			Renderer2D::EndScene();
 		}
 
 		m_PhongRenderer.GetFrameBuffer()->Unbind();
@@ -206,8 +223,7 @@ namespace CGCore {
 				CG_CLIENT_INFO("Viewport size: {0} ,{1}", wsize.x, wsize.y);
 				m_PhongRenderer.GetFrameBuffer()->Resize(wsize.x, wsize.y);
 				ShadowRenderer::Resize(wsize.x, wsize.y);
-				m_Camera->SetAspectRatio(wsize.x / wsize.y);
-
+				m_Camera->SetAspectRatio(float(wsize.x) / wsize.y);
 			}
 			auto texture = static_cast<OpenGLFrameBuffer*>(m_PhongRenderer.GetFrameBuffer().get());
 			ImGui::Image((void*)texture->GetColor(), wsize, ImVec2(0, 1), ImVec2(1, 0));

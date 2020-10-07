@@ -27,6 +27,7 @@
 #include"graphics/api/Texture.h"
 #include"graphics/api/FrameBuffer.h"
 #include"graphics/api/RenderCommand.h"
+#include"graphics/Material.h"
 
 //model
 #include"graphics/modelLoader/Mesh.h"

@@ -8,6 +8,7 @@
 namespace CGCore {
 	struct CommandBuffer {
 		Ref<Mesh> Mesh=nullptr;
+		Material Mat;
 		glm::mat4 Transform = glm::identity<glm::mat4>();
 		CommandBuffer() = default;
 
@@ -35,7 +36,7 @@ namespace CGCore {
 	void PhongRenderer::Init()
 	{
 		s_PhongRenderData = new PhongRendererData();
-		s_PhongRenderData->PhongShader= Shader::Create(std::string("../assets/shader/Phong.vert.glsl"), std::string("../assets/shader/Phong.frag.glsl"));
+		s_PhongRenderData->PhongShader= Shader::Create(std::string("../assets/shader/PBRForwardRenderer.vert.glsl"), std::string("../assets/shader/PBRForwardRenderer.frag.glsl"));
 		s_PhongRenderData->CommandBuffer.reserve(100);
 		s_PhongRenderData->LightSources.reserve(32);
 
@@ -55,32 +56,6 @@ namespace CGCore {
 		delete s_PhongRenderData;
 	}
 
-	void PhongRenderer::BeginScene(Camera* camera)
-	{
-		//Init statistics:
-		Reset3DStats();
-		s_PhongRenderData->PhongShader->Bind();
-		//Update Transform Uniform
-		s_PhongRenderData->TransformUniformBuffer->UpdateSubData(&camera->GetViewMatrix(),sizeof(glm::mat4),0);
-		s_PhongRenderData->TransformUniformBuffer->UpdateSubData(&camera->GetProjectionMatrix(), sizeof(glm::mat4), sizeof(glm::mat4));
-		s_PhongRenderData->PhongShader->UploadUniformFloat3("viewPos", camera->GetPosition());
-		//Light Uniform buffer
-		int numLight = s_PhongRenderData->LightSources.size();
-		s_PhongRenderData->LightUniformBuffer->UpdateSubData(s_PhongRenderData->LightSources.data(), s_PhongRenderData->LightSources.size() * sizeof(Light), 0);
-		s_PhongRenderData->LightUniformBuffer->UpdateSubData(&numLight, sizeof(numLight), s_PhongRenderData->MaxNumLight * sizeof(Light));
-		//Bind uniform buffer
-		s_PhongRenderData->TransformUniformBuffer->Bind(0, s_PhongRenderData->PhongShader.get(), "uTransformMatrix");
-		s_PhongRenderData->LightUniformBuffer->Bind(1, s_PhongRenderData->PhongShader.get(), "uLights");
-
-		//skybox
-
-		SkyboxRenderer::BeginScene(camera);
-		s_PhongRenderData->TransformUniformBuffer->Bind(0, SkyboxRenderer::GetShader().get() , "uTransformMatrix");
-
-
-		
-	
-	}
 
 	void PhongRenderer::BeginScene(Scene* scene)
 	{
@@ -106,12 +81,13 @@ namespace CGCore {
 			return;
 		}
 		
-		auto meshview = registry.view<MeshComponent, TransformComponent>();
+		auto meshview = registry.view<MeshComponent, TransformComponent,Material>();
 		for (auto entity : meshview) {
 			// a component at a time ...
 			auto& meshcomponent = meshview.get<MeshComponent>(entity);
 			auto& transformComponent = meshview.get<TransformComponent>(entity);
-			SubmitMesh(meshcomponent.Meshes, transformComponent.GetWorldMatrix()*transformComponent.GetLocalMatrix());
+			auto& materialComponent = meshview.get<Material>(entity);
+			SubmitMesh(meshcomponent.Meshes, materialComponent, transformComponent.GetWorldMatrix()*transformComponent.GetLocalMatrix());
 		}
 		
 		auto lightView = registry.view<Light>();
@@ -158,6 +134,15 @@ namespace CGCore {
 		buffer.Transform = transform;
 		s_PhongRenderData->CommandBuffer.emplace_back(buffer);
 	}
+	void PhongRenderer::SubmitMesh(Ref<Mesh> mesh, Material mat, const glm::mat4& transform)
+	{
+
+		CommandBuffer buffer;
+		buffer.Mesh = mesh;
+		buffer.Mat = mat;
+		buffer.Transform = transform;
+		s_PhongRenderData->CommandBuffer.emplace_back(buffer);
+	}
 	void PhongRenderer::SubmitLight(const Light& light)
 	{
 		s_PhongRenderData->LightSources.emplace_back(light);
@@ -170,21 +155,6 @@ namespace CGCore {
 
 	void PhongRenderer::EndScene()
 	{
-		//TODO: remove after shadow test.
-		/*for (auto& light : s_PhongRenderData->LightSources) {
-			ShadowRenderer::BeginScene(light);
-			//TODO: for temperory test shadow map
-			for (auto& command : s_PhongRenderData->CommandBuffer) {
-				ShadowRenderer::GetShader()->UploadUniformMat4("uModel", command.Transform);
-				command.Mesh->Draw();
-				s_PhongRenderData->Stats.DrawCalls++;
-			}
-			ShadowRenderer::EndScene();
-
-		}*/
-
-
-	
 		s_PhongRenderData->FrameBuffer->Bind();
 		RenderCommand::Clear(); 
 		RenderCommand::ClearColor();
@@ -202,6 +172,9 @@ namespace CGCore {
 		
 		for (auto& command : s_PhongRenderData->CommandBuffer) {
 			s_PhongRenderData->PhongShader->UploadUniformMat4("uModel", command.Transform);
+			s_PhongRenderData->PhongShader->UploadUniformFloat("metallic", command.Mat.Metallic);
+			s_PhongRenderData->PhongShader->UploadUniformFloat("roughness", command.Mat.Roughness);
+			s_PhongRenderData->PhongShader->UploadUniformFloat("ao", command.Mat.Ao);
 			command.Mesh->Draw(); 
 			s_PhongRenderData->Stats.DrawCalls++;
 		}

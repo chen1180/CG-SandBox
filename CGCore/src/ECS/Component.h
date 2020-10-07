@@ -10,6 +10,7 @@
 #include"graphics/modelLoader/Mesh.h"
 #include"graphics/camera/Camera.h"
 #include "graphics/Light.h"
+#include"graphics/Material.h"
 #include"entt/entt.hpp"
 namespace CGCore {
 	struct TagComponent {
@@ -28,9 +29,18 @@ namespace CGCore {
 			: Meshes(mesh) {}
 
 	};
+	struct SpriteRendererComponent
+	{
+		glm::vec4 Color{ 1.0f, 1.0f, 1.0f, 1.0f };
+
+		SpriteRendererComponent() = default;
+		SpriteRendererComponent(const SpriteRendererComponent&) = default;
+		SpriteRendererComponent(const glm::vec4 & color)
+			: Color(color) {}
+	};
 	struct CameraComponent {
 		Ref<Camera> Cam;
-		bool IsMainCamera;
+		bool IsMainCamera=false;
 		CameraComponent() = default;
 		CameraComponent(const CameraComponent&) = default;
 		CameraComponent(const Ref<Camera>& cam,bool isMainCamera=false)
@@ -127,7 +137,7 @@ namespace CGCore {
 			ImGui::TextUnformatted("Position");
 			ImGui::NextColumn();
 			ImGui::PushItemWidth(-1);
-			if (ImGui::DragFloat3("##Position",glm::value_ptr(m_LocalPosition)),.1f)
+			if (ImGui::DragFloat3("##Position",glm::value_ptr(m_LocalPosition)),.01f)
 			{
 				update = true;
 			}

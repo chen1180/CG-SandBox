@@ -178,13 +178,11 @@ namespace CGCore {
 			{
 				
 				entity.AddComponent<MeshComponent>(mesh);
-				entity.AddComponent<TransformComponent>();
 			}
 			else {
 				//TODO: Add Hierachy component
 				auto meshEntity = scene->CreateEntity();
 				meshEntity.AddComponent<MeshComponent>(mesh);
-				meshEntity.AddComponent<TransformComponent>();
 				meshEntity.AddComponent<Hierarchy>(entity.GetEntityHandler());
 			}
 

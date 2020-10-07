@@ -11,11 +11,11 @@ namespace CGCore {
 		~PhongRenderer() { }
 		virtual void Init() override;
 		virtual void ShutDown()override;
-		virtual void BeginScene(Camera* camera)override;
 		virtual void BeginScene(Scene* scene) override;
 		virtual void EndScene()override;
 
-		void SubmitMesh(Ref<Mesh>, const glm::mat4& transform);
+		void SubmitMesh(Ref<Mesh> mesh, const glm::mat4& transform);
+		void SubmitMesh(Ref<Mesh> mesh,Material mat, const glm::mat4& transform);
 		void SubmitLight(const Light& light);
 		void OnImguiRender();
 		void Reset3DStats();

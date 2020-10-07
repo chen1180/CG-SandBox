@@ -14,6 +14,10 @@ struct Light {
     vec4 position ;
     vec4 direction;
     vec4 color ;
+    float type; //0: Directional light 1: Point light 2: Spot light
+    float intensity;
+    float radius;
+    float angle;
 };
 
 #define MAXLIGHTS 32
@@ -32,7 +36,6 @@ layout(std140, binding = 2) uniform uLightTransformMatrix {
 
 uniform vec3 viewPos; 
 //uniform vec3 lightColor;
-#define MaxNumShadowMap 16
 uniform sampler2D shadowMap[MaxShadowMap];
 uniform samplerCube skyBox;
 
@@ -47,18 +50,18 @@ float ShadowCalculation(vec4 fragPosLightSpace,vec3 lightPos,int shadowMapIndex)
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
     // transform to [0,1] range
     projCoords = projCoords * 0.5 + 0.5;
+    if (projCoords.z>1.0f) 
+        return 0.0f;
     // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
     float closestDepth = texture(shadowMap[shadowMapIndex], projCoords.xy).r; 
     // get depth of current fragment from light's perspective
     float currentDepth = projCoords.z;
-    if (currentDepth>1.0) {
-        return 1.0;
-    }
+     float shadow = 0.0;
     // check whether current frag pos is in shadow
     vec3 lightDir = normalize(lightPos - fs_in.fragPos);
     //PCF
     float bias = max(0.05 * (1.0 - dot(fs_in.normal, lightDir)), 0.005);  
-    float shadow = 0.0;
+  
     vec2 texelSize = 1.0 / textureSize(shadowMap[shadowMapIndex], 0);
     for(int x = -1; x <= 1; ++x)
     {
@@ -72,56 +75,72 @@ float ShadowCalculation(vec4 fragPosLightSpace,vec3 lightPos,int shadowMapIndex)
     return shadow;
 }
 
-vec3 CalculateLambertian(vec3 lightPos,vec3 lightColor){
-     // ambient
-    float ambientStrength = 0.1;
-    vec3 ambient = ambientStrength * lightColor;
-  	
-    // diffuse 
-    float diffusetStrength = 0.8;
-    vec3 norm = normalize(fs_in.normal);
-    vec3 lightDir = normalize(lightPos - fs_in.fragPos);
-    float diff = max(dot(norm, lightDir), 0.0);
-    vec3 diffuse =diffusetStrength* diff * lightColor;
-    
-    // specular
-    float specularStrength = 1.0;
-    vec3 viewDir = normalize(viewPos - fs_in.fragPos);
-    //vec3 reflectDir = reflect(-lightDir, norm);  
-    vec3 halfwayDir = normalize(lightDir + viewDir);
-    float spec = pow(max(dot(viewDir, halfwayDir), 0.0), 32);
-    vec3 specular = specularStrength * spec * lightColor;  
+float windowFuncAttenuation(float radius){
 
-    //reflection skycolor
-    vec3 I = normalize( fs_in.fragPos-viewPos);
-    vec3 R = reflect(I, norm);
-    vec4 skyColor= texture(skyBox, R);
-    vec3 reflection = skyColor.rgb;  
+    const float radiusMax=50.0f;
+    float value=1-pow(radius/radiusMax,4.0f);
+    return pow(max(value,0.0),2);
 
-    float ratio = 1.00 / 1.52;
-    R = refract(I, norm, ratio);
-    skyColor= texture(skyBox, R);
-    vec3 refraction = skyColor.rgb;  
-    
-   
-    // ¼ÆËãÒõÓ°
-    float shadow=0.0; 
-    for(int i=0;i<ShadowMapCount;i++) {
-        vec4 fragPosLightSpace=uLightViewProj[i]* vec4(fs_in.fragPos, 1.0);
-        shadow += ShadowCalculation(fragPosLightSpace,lightPos,i);
-    }
-    shadow/=float(ShadowMapCount);
-    float attenuation= 1.0/ pow(length(lightPos-fs_in.fragPos)+1.0,2);
-
-    vec3 lighting = (ambient + (1.0 - shadow) * (diffuse + specular)) * fs_in.color.rgb;  
-    return lighting;
 }
+const float screenGamma = 2.2;
 
 void main()
 {
-    vec3 lighting=vec3(0.0f);
+    vec3 ambientColor=vec3(0.1f);
+    vec3 diffuseColor=vec3(0.0f);
+    vec3 specularColor=vec3(0.0f);
+    float shadow=0.0f;
     for (int i=0;i<lightNum;i++){
-        lighting+=CalculateLambertian(lights[i].position.xyz,lights[i].color.xyz);
+
+        vec3 lightPos=lights[i].position.xyz;
+        vec3 lightColor=lights[i].color.rgb*lights[i].intensity;
+        vec3 lightDir=lights[i].direction.xyz;
+        vec3 norm = normalize(fs_in.normal);
+        float attenuation=1.0f;
+
+        if (lights[i].type==0.0) {
+            
+
+        } else if (lights[i].type==1.0) {
+                  
+            lightDir = normalize(lightPos - fs_in.fragPos);
+            float dist=length(lightPos - fs_in.fragPos);
+            // Attenuation
+			float atten = lights[i].radius / (pow(dist, 2.0) + 1.0);
+            attenuation=atten*windowFuncAttenuation(dist);
+
+        } else if (lights[i].type==2.0) {
+            lightDir=normalize(lightPos-fs_in.fragPos);
+			float dist          = length(lightPos-fs_in.fragPos);
+
+			float cos_theta = dot(lights[i].direction.xyz, -lightDir)/(length(lights[i].direction.xyz)*length(lightDir));
+
+            float cos_umbra   = cos( radians(lights[i].angle));  
+            float cos_penumbra= cos(radians(lights[i].angle-2.5f));
+			float t	=clamp(((cos_theta - cos_umbra) / (cos_penumbra-cos_umbra)), 0.0, 1.0); 
+			attenuation = t*t*lights[i].radius / (pow(dist, 2.0) + 1.0);
+            
+        }
+
+        //ambient
+        ambientColor*=attenuation;
+
+        // diffuse 
+        float diff = max(dot(lightDir,norm), 0.0);
+        diffuseColor += diff * lightColor*attenuation;
+        // specular
+        float specularStrength = 0.8;
+        vec3 viewDir = normalize(viewPos - fs_in.fragPos);
+        vec3 reflectDir = reflect(-lightDir, norm);  
+        //vec3 halfwayDir = normalize(lightDir + viewDir);
+        float spec = pow(max(dot(viewDir, reflectDir), 0.0), 64);
+        specularColor += specularStrength * spec * lightColor*attenuation;  
+        
+        vec4 fragPosLightSpace=uLightViewProj[i]* vec4(fs_in.fragPos, 1.0);
+        shadow += ShadowCalculation(fragPosLightSpace,lightPos,i);
     }
-    FragColor = vec4(lighting,1.0f);
+    shadow=clamp(shadow,0.0,1.0);
+    vec3 colorLinear = (ambientColor +  (1.0f-shadow)*(diffuseColor + specularColor)) * fs_in.color.rgb;  
+    vec3 colorGammaCorrected = pow(colorLinear, vec3(1.0 / screenGamma));
+    FragColor = vec4(colorGammaCorrected,1.0f);
 }

@@ -83,7 +83,6 @@ void main()
     for (int i=0;i<lightNum;i++){
         vec3 lightPos=lights[i].position.xyz;
         vec3 lightColor=lights[i].color.rgb;
-        
 
         // diffuse 
         vec3 norm = normalize(fs_in.normal);
