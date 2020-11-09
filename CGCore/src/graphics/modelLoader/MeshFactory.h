@@ -11,7 +11,8 @@ namespace CGCore {
 		Pyramid,
 		Sphere,
 		Capsule,
-		Cylinder
+		Cylinder,
+		File
 	};
 	class Mesh;
 	class MeshFactory

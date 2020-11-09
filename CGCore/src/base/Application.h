@@ -15,6 +15,7 @@ namespace CGCore {
 		Application();
 		virtual ~Application();
 		void Run();
+		void Close();
 		void PushLayer(Layer* layer);
 		void PopLayer(Layer* layer);
 		void OnEvent(Event& event);

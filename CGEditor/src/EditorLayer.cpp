@@ -3,13 +3,14 @@
 #include"glm/glm.hpp"
 #include"glm/gtc/matrix_transform.hpp"
 #include"platform/opengl/OpenGLFrameBuffer.h"
+
 namespace CGCore {
 
 	void EditorLayer::OnAttach()
 	{
 		CG_CLIENT_INFO("App layer attached");
-		m_Shader = Shader::Create(std::string("../assets/shader/Debug_cube.vert.glsl"), std::string("../assets/shader/Debug_cube.frag.glsl"));
-		m_DepthShader= Shader::Create(std::string("../assets/shader/Debug_depth.vert.glsl"), std::string("../assets/shader/Debug_depth.frag.glsl"));
+		m_Shader = Shader::Create(std::string("assets/shader/Debug_cube.vert.glsl"), std::string("assets/shader/Debug_cube.frag.glsl"));
+		m_DepthShader= Shader::Create(std::string("assets/shader/Debug_depth.vert.glsl"), std::string("assets/shader/Debug_depth.frag.glsl"));
 		auto width=(float)Application::Get().GetWindow().GetWidth();
 		auto height= (float)Application::Get().GetWindow().GetHeight();  
 		m_Camera = CreateRef<Camera> ( 60.0f, 0.1f, 100.0f, width / height);
@@ -23,45 +24,39 @@ namespace CGCore {
 		auto cameraEntity=m_Scene->CreateEntity("Camera");
 		cameraEntity.AddComponent<CameraComponent>(m_Camera,true);
 		
-		auto cube = ModelLoader::LoadModel("../assets/mesh/cube.obj", m_Scene.get());
-		auto& transform1 = cube.GetComponent<TransformComponent>();
-		transform1.SetWorldMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(0.0,1.0, 2.0)));
+		auto cube = m_Scene->CreateEntity();
+		cube.AddComponent<Model>("assets/mesh/cube.obj");
 
 
 		auto meshEntity = m_Scene->CreateEntity();
 		auto& transform = meshEntity.GetComponent<TransformComponent>();
 		transform.SetWorldMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(0.0, -5.0,0.0))*glm::scale(glm::mat4(1.0f),glm::vec3(5.0f,5.0f,5.0f)));
-		meshEntity.AddComponent<MeshComponent>(cube.GetComponent<MeshComponent>());
+		meshEntity.AddComponent<Model>(cube.GetComponent<Model>());
 		meshEntity.AddComponent<Material>();
 
-		auto sphere= ModelLoader::LoadModel("../assets/mesh/sphere.obj", m_Scene.get());
+		auto sphere = m_Scene->CreateEntity();
+		sphere.AddComponent<Model>("assets/mesh/sphere.obj");
 		auto& transform2 = sphere.GetComponent<TransformComponent>();
 		transform2.SetWorldMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(-2.0, 1.0, -1.0)));
 
 		for (int i = -2;i < 2;i++) {
 			for (int j = -2;j < 2;j++) {
-				auto meshEntity = m_Scene->CreateEntity();
+				auto entity = m_Scene->CreateEntity();
 				float metallic = (i + 2.0) * 0.1f;
 				float roughness = (j + 2.0) * 0.1f;
 				auto material = Material(metallic, roughness);
-				
-				auto& trans = meshEntity.GetComponent<TransformComponent>();
+				auto& trans = entity.GetComponent<TransformComponent>();
 				trans.SetWorldMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(i * 2.5, 1.0, j * 2.5f)));
-				meshEntity.AddComponent<MeshComponent>(sphere.GetComponent<MeshComponent>());
-				meshEntity.AddComponent<Material>(material);
+				entity.AddComponent<Model>(sphere.GetComponent<Model>());
+				entity.AddComponent<Material>(material);
 			}
 		}
 		
-		auto planeEntt = m_Scene->CreateEntity();
-		Ref<Mesh> plane = MeshFactory::CreateQuad(-0.5,1.5,5.0,5.0);
-		planeEntt.AddComponent<MeshComponent>(plane);
-		auto& transform3 = planeEntt.GetComponent<TransformComponent>();
-		//transform3.SetLocalScale(glm::vec3(10.0, 10.0, 1.0));
-		transform3.SetWorldMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(0.0, 0.5, 0.0)) * glm::rotate(glm::mat4(1.0),glm::radians(90.0f),glm::vec3(1.0,0.0,0.0)));
+	
 
 		//TODO: Add texture component
-		m_TextureCheckerBoard = Texture2D::Create("../assets/texture/Checkerboard.png");
-		m_TexturePig= Texture2D::Create("../assets/texture/Texture.jpg");
+		m_TextureCheckerBoard = Texture2D::Create("assets/texture/Checkerboard.png");
+		m_TexturePig= Texture2D::Create("assets/texture/Texture.jpg");
 	
 		m_Light=m_Scene->CreateEntity("Light1");
 		m_Light.AddComponent<Light>(glm::vec4(-2.0f, 7.0f, -1.0f,0.0f), glm::vec4(0.0, -1.0, 0.0,0.0), glm::vec4(0.0, 1.0, 0.0, 1.0),LightType::SpotLight);
@@ -73,6 +68,8 @@ namespace CGCore {
 		light3.AddComponent<Light>(glm::vec4(0.0f, 5.0f, 3.0f, 0.0f), glm::vec4(0.0, 0.0, 0.0, 0.0), glm::vec4(1.0, 0.0, 0.0, 1.0));
 
 		m_ScenePanel = CreateScope<SceneHierarchyPanel>(m_Scene);
+		m_FileBrowser = CreateScope<FileBrowserWindow>();
+
 	}
 	void EditorLayer::OnDettach()
 	{
@@ -145,6 +142,9 @@ namespace CGCore {
 
 		// DockSpace
 		ImGuiIO& io = ImGui::GetIO();
+		ImGuiStyle& style = ImGui::GetStyle();
+		float minWinSizeX = style.WindowMinSize.x;
+		style.WindowMinSize.x = 370.0f;
 		if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
 		{
 			ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
@@ -159,9 +159,27 @@ namespace CGCore {
 			if (ImGui::SmallButton("click here"))
 				io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 		}
+		style.WindowMinSize.x = minWinSizeX;
 
 		if (ImGui::BeginMenuBar())
 		{
+			if (ImGui::BeginMenu("File"))
+			{
+				if (ImGui::MenuItem("Save"))
+				{
+					m_FileBrowser->SetCallback(BIND_FILEBROWSER_FN(FileSaveCallback));
+					m_FileBrowser->Open();
+				}
+				if (ImGui::MenuItem("Load"))
+				{
+					m_FileBrowser->SetCallback(BIND_FILEBROWSER_FN(FileOpenCallback));
+					m_FileBrowser->Open({".lsn"});
+					
+				}
+				if (ImGui::MenuItem("Exit")) Application::Get().Close();
+				ImGui::EndMenu();
+			}
+
 			if (ImGui::BeginMenu("Docking"))
 			{
 				// Disabling fullscreen would allow the window to be moved to the front of other windows,
@@ -183,7 +201,8 @@ namespace CGCore {
 		ImGui::End();
 		
 		m_ScenePanel->OnImGuiRender();
-		
+		m_FileBrowser->OnImGuiRender();
+
 		ImGui::Begin("New session");
 		ImGui::Separator();
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
@@ -214,7 +233,7 @@ namespace CGCore {
 				m_Camera->GetController()->HandleKeyboard(m_Camera.get(), framerate);
 				m_Camera->GetController()->HandleMouse(m_Camera.get(), framerate, Input::GetMousePosition().first, Input::GetMousePosition().second);
 			}
-
+			
 			// Get the size of the child (i.e. the whole draw size of the windows).
 			ImVec2 wsize = ImGui::GetWindowSize();
 			// Because I use the texture from OpenGL, I need to invert the V from the UV.
@@ -240,5 +259,13 @@ namespace CGCore {
 		if (e.GetEventType() == CGCore::EventType::WindowResize) {
 			CGCore::WindowResizeEvent& event = (CGCore::WindowResizeEvent&) e;
 		}
+	}
+	void EditorLayer::FileOpenCallback(const std::string& filePath)
+	{
+		m_Scene->Deserialise(filePath);
+	}
+	void EditorLayer::FileSaveCallback(const std::string& filePath)
+	{
+		m_Scene->Serialise(filePath);
 	}
 } 

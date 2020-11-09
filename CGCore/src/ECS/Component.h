@@ -1,17 +1,19 @@
 #pragma once
-#include"glm/glm.hpp"
-#include"glm/gtc/quaternion.hpp"
-#include"glm/gtx/quaternion.hpp"
-#include <glm/gtx/matrix_decompose.hpp>
-#include <glm/gtc/type_ptr.hpp>
 #include"pch.h"
-
-#include "imgui.h"
 #include"graphics/modelLoader/Mesh.h"
 #include"graphics/camera/Camera.h"
-#include "graphics/Light.h"
+#include"graphics/Light.h"
 #include"graphics/Material.h"
-#include"entt/entt.hpp"
+#include"graphics/modelLoader/Model.h"
+#include"math/Math.h"
+
+#include <imgui.h>
+
+#include <entt/entt.hpp>
+#include <cereal/cereal.hpp>
+
+
+
 namespace CGCore {
 	struct TagComponent {
 		std::string Tag{ "" };
@@ -20,15 +22,23 @@ namespace CGCore {
 		TagComponent(const TagComponent&) = default;
 		TagComponent(const std::string& tag)
 			: Tag(tag) {}
-	};
-	struct MeshComponent {
-		Ref<Mesh> Meshes = nullptr;
-		MeshComponent() = default;
-		MeshComponent(const MeshComponent&) = default;
-		MeshComponent(const Ref<Mesh>& mesh)
-			: Meshes(mesh) {}
+
+		
+		template<typename Archive>
+		void save(Archive& archive) const
+		{
+			archive(cereal::make_nvp("Tag", Tag));
+		}
+
+		template<typename Archive>
+		void load(Archive& archive)
+		{
+			archive(cereal::make_nvp("Tag", Tag));
+		}
 
 	};
+	
+
 	struct SpriteRendererComponent
 	{
 		glm::vec4 Color{ 1.0f, 1.0f, 1.0f, 1.0f };
@@ -37,6 +47,18 @@ namespace CGCore {
 		SpriteRendererComponent(const SpriteRendererComponent&) = default;
 		SpriteRendererComponent(const glm::vec4 & color)
 			: Color(color) {}
+
+		template<typename Archive>
+		void save(Archive& archive) const
+		{
+			archive(cereal::make_nvp("Sprite color",Color));
+		}
+
+		template<typename Archive>
+		void load(Archive& archive)
+		{
+			archive(cereal::make_nvp("Sprite color", Color));
+		}
 	};
 	struct CameraComponent {
 		Ref<Camera> Cam;
@@ -45,6 +67,18 @@ namespace CGCore {
 		CameraComponent(const CameraComponent&) = default;
 		CameraComponent(const Ref<Camera>& cam,bool isMainCamera=false)
 			: Cam(cam),IsMainCamera(IsMainCamera) {}
+
+		template<typename Archive>
+		void save(Archive& archive) const
+		{
+			archive(cereal::make_nvp("Camera", Cam), cereal::make_nvp("Is Main Camera", IsMainCamera));
+		}
+
+		template<typename Archive>
+		void load(Archive& archive)
+		{
+			archive(cereal::make_nvp("Camera", Cam),cereal::make_nvp("Is Main Camera", IsMainCamera));
+		}
 
 	};
 	class TransformComponent {
@@ -179,6 +213,26 @@ namespace CGCore {
 			ImGui::Separator();
 			ImGui::PopStyleVar();
 			
+		}
+
+		template<typename Archive>
+		void save(Archive& archive) const
+		{
+			archive(cereal::make_nvp("Local matrix", m_LocalMatrix),
+				cereal::make_nvp("World matrix", m_WorldMatrix),
+				cereal::make_nvp("Local position", m_LocalPosition),
+				cereal::make_nvp("Local scale", m_LocalScale),
+				cereal::make_nvp("Local orientation", m_LocalOrientation));
+		}
+
+		template<typename Archive>
+		void load(Archive& archive)
+		{
+			archive(cereal::make_nvp("Local matrix", m_LocalMatrix),
+				cereal::make_nvp("World matrix", m_WorldMatrix),
+				cereal::make_nvp("Local position", m_LocalPosition),
+				cereal::make_nvp("Local scale", m_LocalScale),
+				cereal::make_nvp("Local orientation", m_LocalOrientation));
 		}
 
 

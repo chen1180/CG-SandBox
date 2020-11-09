@@ -22,5 +22,9 @@ namespace CGCore
 		Entity m_SelectionContext;
 	};
 
+	template<typename T, typename UIFunction>
+	static void AddUIComponent(const std::string& name, Entity entity, UIFunction uiFunction);
+
+
 }
 

@@ -36,7 +36,7 @@ namespace CGCore {
 	void PhongRenderer::Init()
 	{
 		s_PhongRenderData = new PhongRendererData();
-		s_PhongRenderData->PhongShader= Shader::Create(std::string("../assets/shader/PBRForwardRenderer.vert.glsl"), std::string("../assets/shader/PBRForwardRenderer.frag.glsl"));
+		s_PhongRenderData->PhongShader= Shader::Create(std::string("assets/shader/PBRForwardRenderer.vert.glsl"), std::string("assets/shader/PBRForwardRenderer.frag.glsl"));
 		s_PhongRenderData->CommandBuffer.reserve(100);
 		s_PhongRenderData->LightSources.reserve(32);
 
@@ -81,13 +81,14 @@ namespace CGCore {
 			return;
 		}
 		
-		auto meshview = registry.view<MeshComponent, TransformComponent,Material>();
+		auto meshview = registry.view<Model,Material, TransformComponent>();
 		for (auto entity : meshview) {
 			// a component at a time ...
-			auto& meshcomponent = meshview.get<MeshComponent>(entity);
+			auto& meshcomponent = meshview.get<Model>(entity);
 			auto& transformComponent = meshview.get<TransformComponent>(entity);
 			auto& materialComponent = meshview.get<Material>(entity);
-			SubmitMesh(meshcomponent.Meshes, materialComponent, transformComponent.GetWorldMatrix()*transformComponent.GetLocalMatrix());
+			for(auto& mesh : meshcomponent.GetMeshes())
+				SubmitMesh(mesh, materialComponent, transformComponent.GetWorldMatrix()*transformComponent.GetLocalMatrix());
 		}
 		
 		auto lightView = registry.view<Light>();

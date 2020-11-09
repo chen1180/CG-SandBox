@@ -13,3 +13,6 @@
 [submodule "CGCore/extern/entt"]
 	path = CGCore/extern/entt
 	url = https://github.com/skypjack/entt
+[submodule "CGCore\\extern\\cereal"]
+	path = CGCore\\extern\\cereal
+	url = https://github.com/chen1180/cereal

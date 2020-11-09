@@ -52,7 +52,8 @@ project "CGCore"
 		"%{IncludeDir.extern}/Glad/include",
 		"%{IncludeDir.extern}/glm",
 		"%{IncludeDir.extern}/tinyobjloader",
-		"%{IncludeDir.extern}/entt/single_include"
+		"%{IncludeDir.extern}/entt/single_include",
+		"%{IncludeDir.extern}/cereal/include"
 	}
 	links{
 		"glfw",
@@ -154,7 +155,8 @@ project "CGEditor"
 		"%{IncludeDir.extern}/Glad/include",
 		"%{IncludeDir.extern}/glm",
 		"%{IncludeDir.extern}/tinyobjloader",
-		"%{IncludeDir.extern}/entt/single_include"
+		"%{IncludeDir.extern}/entt/single_include",
+		"%{IncludeDir.extern}/cereal/include"
 
 	}
 	links{

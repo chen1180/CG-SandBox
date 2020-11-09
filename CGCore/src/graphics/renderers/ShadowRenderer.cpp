@@ -17,7 +17,7 @@ namespace CGCore {
 	void ShadowRenderer::Init()
 	{
 		s_ShadowData = new ShadowRendererData();
-		s_ShadowData->DepthShader=Shader::Create(std::string("../assets/shader/Debug_depth.vert.glsl"), std::string("../assets/shader/Debug_depth.frag.glsl"));
+		s_ShadowData->DepthShader=Shader::Create(std::string("assets/shader/Debug_depth.vert.glsl"), std::string("assets/shader/Debug_depth.frag.glsl"));
 		
 		s_ShadowData->FrameBufferSpecs = FrameBufferSpecs();
 		s_ShadowData->FrameBufferSpecs.Component = FrameBufferComponent::Depth;
@@ -77,14 +77,15 @@ namespace CGCore {
 
 			s_ShadowData->ShadowMaps[i]->Bind();
 			RenderCommand::OnWindowResize(texture->GetWidth(), texture->GetHeight());
-			auto meshview = registry.view<MeshComponent, TransformComponent>();
+			auto meshview = registry.view<Model, TransformComponent>();
 			for (auto entity : meshview) {
 				// a component at a time ...
-				auto& meshcomponent = meshview.get<MeshComponent>(entity);
+				auto& model = meshview.get<Model>(entity);
 				auto& transformComponent = meshview.get<TransformComponent>(entity);
 				s_ShadowData->DepthShader->UploadUniformInt("uLightIndex", i);
 				s_ShadowData->DepthShader->UploadUniformMat4("uModel", transformComponent.GetWorldMatrix() * transformComponent.GetLocalMatrix());
-				meshcomponent.Meshes->Draw();
+				for(auto& mesh: model.GetMeshes())
+					mesh->Draw();
 			}
 			s_ShadowData->ShadowMaps[i]->Unbind();
 		}

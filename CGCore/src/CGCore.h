@@ -31,7 +31,7 @@
 
 //model
 #include"graphics/modelLoader/Mesh.h"
-#include"graphics/modelLoader/ModelLoader.h"
+#include"graphics/modelLoader/Model.h"
 #include"graphics/modelLoader/MeshFactory.h"
 //Camera
 #include"graphics/camera/Camera.h"
@@ -40,3 +40,5 @@
 #include"graphics/camera/CameraController.h"
 //platform
 #include"platform/opengl/OpenGLShader.h"
+//utils
+#include"utils/StringUtils.h"

@@ -46,6 +46,9 @@ namespace CGCore {
 
 		}
 	}
+	void Application::Close() {
+		m_WindowRunning = false;
+	}
 
 	void Application::PushLayer(Layer* layer)
 	{
@@ -61,7 +64,7 @@ namespace CGCore {
 
 	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{
-		m_WindowRunning = false;
+		Close();
 		return true;
 	}
 

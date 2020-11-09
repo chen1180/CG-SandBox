@@ -15,9 +15,9 @@ namespace CGCore {
 	void SkyboxRenderer::Init()
 	{
 		s_SkyboxData = new SkyboxRendererData();
-		s_SkyboxData->SkyboxShader = Shader::Create(std::string("../assets/shader/Debug_skybox.vert.glsl"), std::string("../assets/shader/Debug_skybox.frag.glsl"));
-		//cubemap ../assets
-		s_SkyboxData->CubeMap = TextureCube::Create("../assets/texture/cubemap/skybox");
+		s_SkyboxData->SkyboxShader = Shader::Create(std::string("assets/shader/Debug_skybox.vert.glsl"), std::string("assets/shader/Debug_skybox.frag.glsl"));
+		//cubemap assets
+		s_SkyboxData->CubeMap = TextureCube::Create("assets/texture/cubemap/skybox");
 		float skyboxVertices[] = {
 			// positions          
 			-1.0f,  1.0f, -1.0f,

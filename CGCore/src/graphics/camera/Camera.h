@@ -1,8 +1,8 @@
 #pragma once
 #include"base/Base.h"
-#include"glm/glm.hpp"
-#include"glm/gtc/quaternion.hpp"
+#include"math/Math.h"
 
+#include <cereal/cereal.hpp>
 namespace CGCore {
 	enum class ControllerType {
 		FPS=0,
@@ -76,6 +76,23 @@ namespace CGCore {
 		const Ref<CameraController>& GetController() const;
 
 		void SetCameraControllerType(ControllerType type);
+
+		template<typename Archive>
+		void save(Archive& archive) const
+		{
+			archive(cereal::make_nvp("Scale", m_Scale), cereal::make_nvp("Aspect", m_AspectRatio), cereal::make_nvp("FOV", m_Fov), cereal::make_nvp("Near", m_Near), cereal::make_nvp("Far", m_Far));
+		}
+
+		template<typename Archive>
+		void load(Archive& archive)
+		{
+			archive(cereal::make_nvp("Scale", m_Scale), cereal::make_nvp("Aspect", m_AspectRatio), cereal::make_nvp("FOV", m_Fov), cereal::make_nvp("Near", m_Near), cereal::make_nvp("Far", m_Far));
+
+			m_ViewDirty = true;
+			m_ProjectionDirty = true;
+		}
+
+
 	private:
 		void UpdateViewMatrix();
 		void UpdateProjectionMatrix();

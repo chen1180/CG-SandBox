@@ -2,6 +2,11 @@
 #include "Scene.h"
 #include "Entity.h"
 #include"Component.h"
+
+#include <cereal/types/polymorphic.hpp>
+#include <cereal/archives/binary.hpp>
+#include <cereal/archives/json.hpp>
+
 namespace CGCore {
 	void Scene::OnUpdate(float deltaTime)
 	{
@@ -20,6 +25,14 @@ namespace CGCore {
 		 m_Registry.destroy(entity); 
 	}
 
+	void Scene::DistroyAllEntities()
+	{
+		m_Registry.each([&](auto entity) {
+			m_Registry.destroy(entity);
+		});
+		m_Registry.clear();
+	}
+
 	void Scene::OnViewportResize(uint32_t width, uint32_t height)
 	{
 		m_ViewportHeight = height;
@@ -33,6 +46,87 @@ namespace CGCore {
 		}
 	}
 
+#define ALL_COMPONENTS TagComponent,SpriteRendererComponent,TransformComponent,Light,CameraComponent,Model,Material
+	void Scene::Serialise(const std::string& filePath, bool binary)
+	{
+		std::string path = filePath;
+		path += m_SceneName;
+		if (binary)
+		{
+			path += std::string(".bin");
+
+			std::ofstream file(path, std::ios::binary);
+
+			{
+				// output finishes flushing its contents when it goes out of scope
+				cereal::BinaryOutputArchive output{ file };
+				output(*this);
+				entt::snapshot{ m_Registry }.entities(output).component<ALL_COMPONENTS>(output);
+			}
+			file.close();
+		}
+		else
+		{
+			std::stringstream storage;
+			path += std::string(".lsn");
+
+			{
+				// output finishes flushing its contents when it goes out of scope
+				cereal::JSONOutputArchive output{ storage };
+				output(*this);
+				entt::snapshot{ m_Registry }.entities(output).component<ALL_COMPONENTS>(output);
+			}
+			std::ofstream myfile(path);
+			if (myfile.is_open())
+			{
+				myfile << storage.str();
+				myfile.close();
+			}
+		}
+	}
+
+	void Scene::Deserialise(const std::string& filePath, bool binary)
+	{
+		//TODO: temporary and remove later, add entity manager
+		DistroyAllEntities();
+
+		std::string path = filePath;
+
+		if (binary)
+		{
+
+			if (!std::filesystem::exists(path))
+			{
+				CG_CORE_ERROR("No saved scene file found {0}", path);
+				return;
+			}
+
+			std::ifstream file(path, std::ios::binary);
+			cereal::BinaryInputArchive input(file);
+			input(*this);
+			entt::snapshot_loader{m_Registry}.entities(input).component<ALL_COMPONENTS>(input); //continuous_loader
+		}
+		else
+		{
+
+			if (!std::filesystem::exists(path))
+			{
+				CG_CORE_ERROR("No saved scene file found {0}", path);
+				return;
+			}
+			std::ifstream infile(path);
+			std::stringstream buffer;
+			buffer << infile.rdbuf();
+			std::string data = buffer.str();
+			std::istringstream istr;
+			istr.str(data);
+			cereal::JSONInputArchive input(istr);
+			input(*this);
+			entt::snapshot_loader{ m_Registry }.entities(input).component<ALL_COMPONENTS>(input); //continuous_loader
+		}
+
+	}
+
 	template<typename T>
 	void Scene::OnComponentAdded(Entity entity, T& component)
 	{
@@ -42,11 +136,6 @@ namespace CGCore {
 	void Scene::OnComponentAdded<TagComponent>(Entity entity, TagComponent& component)
 	{
 		
-	}
-	template<>
-	void Scene::OnComponentAdded<MeshComponent>(Entity entity, MeshComponent& component)
-	{
-
 	}
 	template<>
 	void Scene::OnComponentAdded<SpriteRendererComponent>(Entity entity, SpriteRendererComponent& component)
@@ -60,6 +149,11 @@ namespace CGCore {
 	}
 	template<>
 	void Scene::OnComponentAdded<TransformComponent>(Entity entity, TransformComponent& component)
+	{
+
+	}
+	template<>
+	void Scene::OnComponentAdded<Model>(Entity entity, Model& component)
 	{
 
 	}

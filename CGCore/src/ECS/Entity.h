@@ -55,7 +55,7 @@ namespace CGCore {
 			}
 			
 			const entt::entity& GetEntityHandler() { return m_EntityHandle; }
-		
+
 
 		private:
 			entt::entity m_EntityHandle{ entt::null };

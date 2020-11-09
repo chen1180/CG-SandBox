@@ -2,7 +2,6 @@
 #include "base/Log.h"
 #include "Light.h"
 #include <imgui.h>
-#include "glm/gtc/type_ptr.hpp"
 #include "imgui/ImguiHelper.h"
 
 namespace CGCore {

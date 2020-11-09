@@ -1,5 +1,6 @@
 #pragma once
-#include"glm/glm.hpp"
+#include"math/Math.h"
+
 namespace CGCore {
 	enum class LightType {
 		DirectionalLight=0,
@@ -23,6 +24,13 @@ namespace CGCore {
 		float Light::StringToLightType(const std::string& type);
 
 		void OnImGui();
+
+		template<class Archive>
+		void serialize(Archive& archive)
+		{
+			archive(CEREAL_NVP(Position), CEREAL_NVP(Direction), CEREAL_NVP(Color), CEREAL_NVP(Type), CEREAL_NVP(Intensity), CEREAL_NVP(Radius), CEREAL_NVP(Angle));
+		}
+
 	public:
 		glm::vec4 Position;
 		glm::vec4 Direction;

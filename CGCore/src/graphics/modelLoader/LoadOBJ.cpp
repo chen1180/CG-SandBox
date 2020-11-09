@@ -1,11 +1,11 @@
 #include"pch.h"
-#include "ModelLoader.h"
+#include "Model.h"
 #include "graphics/api/VertexArray.h"
 #include "graphics/api/Buffer.h"
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
 namespace CGCore {
-	Entity ModelLoader::LoadOBJ(const std::string& path, Scene* scene) {
+	void Model::LoadOBJ(const std::string& path) {
 
 		std::filesystem::path filepath(path);
 		std::string error;
@@ -28,7 +28,6 @@ namespace CGCore {
 		}
 
 		std::string name = filepath.filename().string();
-		auto entity = scene->CreateEntity(name);
 		bool singleMesh = shapes.size() == 1;
 	
 		
@@ -174,7 +173,8 @@ namespace CGCore {
 			va->SetIndexBuffer(ib);
 
 			auto mesh = CreateRef<Mesh>(va, ib);
-			if (singleMesh)
+			m_Meshes.push_back(mesh);
+			/*if (singleMesh)
 			{
 				
 				entity.AddComponent<MeshComponent>(mesh);
@@ -184,12 +184,11 @@ namespace CGCore {
 				auto meshEntity = scene->CreateEntity();
 				meshEntity.AddComponent<MeshComponent>(mesh);
 				meshEntity.AddComponent<Hierarchy>(entity.GetEntityHandler());
-			}
+			}*/
 
 			delete[] vertices;
 			delete[] indices;
 		}
-		return entity;
 
 	}
 
